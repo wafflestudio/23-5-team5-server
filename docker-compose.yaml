@@ -4,7 +4,7 @@ services:
   # MySQL: JDBC와 연결될 DB
   db:
     image: mysql:8.0
-    container_name: seminar-mysql
+    container_name: mysql
     ports:
       - "3306:3306"
     environment:
@@ -21,6 +21,6 @@ services:
   # Redis: JWT 블랙리스트나 캐싱용
   redis:
     image: redis:alpine # 가장 가벼운 버전
-    container_name: seminar-redis
+    container_name: redis
     ports:
       - "6379:6379"
