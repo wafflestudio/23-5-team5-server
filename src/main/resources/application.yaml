@@ -1,0 +1,41 @@
+spring:
+  # DB 설정 (JDBC)
+  datasource:
+    url: jdbc:mysql://localhost:3306/${DB_NAME:seminar2025}?allowPublicKeyRetrieval=true&useSSL=false
+    username: ${DB_USER:user}
+    password: ${DB_PASSWORD:somepassword}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  flyway:
+    enabled: true
+
+  # Redis 설정
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
+  # S3 설정 (AWS IAM 이용)
+  cloud:
+    aws:
+      s3:
+        bucket: ${S3_BUCKET_NAME}
+      region:
+        static: ap-northeast-2
+      stack:
+        auto: false
+
+# JWT 설정
+jwt:
+  secret: ${JWT_SECRET}
+  expiration-in-ms: 86400000
+
+# Swagger
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+# SQL 로그 확인
+logging:
+  level:
+    org.springframework.jdbc.core.JdbcTemplate: DEBUG
