@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  # MySQL: JDBC와 연결될 DB
+  db:
+    image: mysql:8.0
+    container_name: seminar-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+
+  # Redis: JWT 블랙리스트나 캐싱용
+  redis:
+    image: redis:alpine # 가장 가벼운 버전
+    container_name: seminar-redis
+    ports:
+      - "6379:6379"

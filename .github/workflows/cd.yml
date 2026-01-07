@@ -1,0 +1,46 @@
+name: CD - Deploy to Server
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository }}:latest
+
+      - name: Deploy to Server via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            # 1. 최신 이미지 받아오기
+            docker pull ghcr.io/${{ github.repository }}:latest
+            
+            # 2. 기존 컨테이너 끄고 새 컨테이너 띄우기 (docker-compose 사용)
+            cd ~/app # 서버 내 프로젝트 폴더 위치
+            docker-compose up -d
+            
+            # 3. 안 쓰는 이미지 정리 (용량 확보)
+            docker image prune -f
