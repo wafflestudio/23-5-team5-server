@@ -4,7 +4,7 @@ plugins {
     id("org.springframework.boot") version "3.5.9"
     id("io.spring.dependency-management") version "1.1.7"
     id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
-    // kotlin("plugin.jpa") version "1.9.25"
+    kotlin("plugin.jpa") version "1.9.25"
 }
 
 group = "com.team-5"
@@ -28,7 +28,7 @@ repositories {
 }
 
 dependencies {
-    // implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
@@ -53,11 +53,11 @@ kotlin {
     }
 }
 
-// allOpen {
-// 	annotation("jakarta.persistence.Entity")
-// 	annotation("jakarta.persistence.MappedSuperclass")
-// 	annotation("jakarta.persistence.Embeddable")
-// }
+allOpen {
+	annotation("jakarta.persistence.Entity")
+	annotation("jakarta.persistence.MappedSuperclass")
+	annotation("jakarta.persistence.Embeddable")
+}
 
 tasks.withType<Test> {
     useJUnitPlatform()
