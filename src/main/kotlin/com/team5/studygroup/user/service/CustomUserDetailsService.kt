@@ -1,3 +1,4 @@
+/*
 package com.team5.studygroup.user.service
 
 import com.team5.studygroup.user.repository.UserRepository
@@ -23,4 +24,4 @@ class CustomUserDetailsService(
             .username(user.username)
             .password(passwordEncoder.encode(user.password))
             .build()
-}
+}*/
