@@ -1,26 +1,42 @@
-version: '3.8'
-
 services:
-  # MySQL: JDBC와 연결될 DB
-  db:
+  app:
+    container_name: toyproject-team5
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+      - redis
+    environment:
+      # 1. DB 설정
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: toyproject-team5
+      DB_USER: waffle
+      DB_PASSWORD: somepassword
+
+      # 2. Redis 설정
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+
+      # 3. 기타 설정
+      JWT_SECRET: "secret-key-for-local-development-only"
+      S3_BUCKET_NAME: "dummy-bucket"
+
+  mysql:
     image: mysql:8.0
-    container_name: mysql
+    container_name: mysql-db
     ports:
       - "3306:3306"
     environment:
-      MYSQL_DATABASE: ${DB_NAME}
-      MYSQL_USER: ${DB_USER}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
-    volumes:
-      - ./mysql_data:/var/lib/mysql
-    command:
-      - --character-set-server=utf8mb4
-      - --collation-server=utf8mb4_unicode_ci
+      MYSQL_DATABASE: toyproject-team5
+      MYSQL_ROOT_PASSWORD: root
 
-  # Redis: JWT 블랙리스트나 캐싱용
+      MYSQL_USER: waffle
+      MYSQL_PASSWORD: somepassword
+
   redis:
-    image: redis:alpine # 가장 가벼운 버전
-    container_name: redis
+    image: redis:alpine
+    container_name: redis-cache
     ports:
       - "6379:6379"
