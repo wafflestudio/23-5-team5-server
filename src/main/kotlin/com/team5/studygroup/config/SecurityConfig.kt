@@ -27,7 +27,7 @@ class SecurityConfig(
                 it.requestMatchers(
                     "/ping",
                     "/swagger-ui/**",
-                    "/v3/api-docs/**"
+                    "/v3/api-docs/**",
                 ).permitAll()
                     .requestMatchers("/members/login", "/members/signup").anonymous()
                     .anyRequest().authenticated()
