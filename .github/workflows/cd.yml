@@ -4,6 +4,8 @@ on:
   push:
     branches: [ "main" ]
 
+  workflow_dispatch:
+
 env:
   DEPLOYMENT_NAME: team5-app
   REGISTRY: ghcr.io
