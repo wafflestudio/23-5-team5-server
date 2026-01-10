@@ -9,8 +9,16 @@ spring:
     username: sa
     password:
 
+  cloud:
+    aws:
+      region:
+        static: ap-northeast-2
+      credentials:
+        access-key: dummy
+        secret-key: dummy
+
 logging:
   level:
     root: INFO
     org.springframework.jdbc.core: DEBUG # JDBC 쿼리 로그
-    com.team5.studygroup: DEBUG # 여기만 실제 패키지로 수정!
+    com.team5.studygroup: DEBUG
