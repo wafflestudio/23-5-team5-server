@@ -55,3 +55,9 @@ jobs:
 
       - name: Run Tests
         run: ./gradlew test
+        env:
+          # AWS SDK가 "아, 설정이 있구나"라고 속게 만드는 가짜 정보입니다.
+          AWS_ACCESS_KEY_ID: dummy
+          AWS_SECRET_ACCESS_KEY: dummy
+          AWS_REGION: ap-northeast-2
+          AWS_EC2_METADATA_DISABLED: true
