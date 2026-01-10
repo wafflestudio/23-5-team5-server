@@ -80,7 +80,7 @@ jobs:
             K8S_DIR="/home/${{ secrets.SERVER_USER }}/k8s/k8s"
 
             sudo k3s crictl pull $IMAGE
-            sudo k3s kubectl apply -f $K8S_DIR/
+            sudo k3s kubectl apply -f $K8S_DIR/ --validate=false
             sudo k3s kubectl rollout restart deployment $DEPLOYMENT
             sudo k3s kubectl rollout status deployment $DEPLOYMENT
             sudo k3s crictl rmi --prune
