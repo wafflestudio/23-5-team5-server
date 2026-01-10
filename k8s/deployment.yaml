@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: team5-app
+  labels:
+    app: team5-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: team5-app
+  template:
+    metadata:
+      labels:
+        app: team5-app
+    spec:
+      containers:
+        - name: team5-app
+          image: ghcr.io/wafflestudio/23-5-team5-server:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            # --- DB 접속 정보 ---
+            - name: DB_HOST
+              value: "mysql"
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_USER
+              value: "waffle"
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: team5-secrets
+                  key: mysql-user-password
+
+            # --- Redis 접속 정보 ---
+            - name: REDIS_HOST
+              value: "redis"
+            - name: REDIS_PORT
+              value: "6379"
+
+            # --- 보안 키 (JWT) ---
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: team5-secrets
+                  key: jwt-secret
