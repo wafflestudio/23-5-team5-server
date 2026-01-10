@@ -77,7 +77,7 @@ jobs:
           script: |
             DEPLOYMENT=${{ env.DEPLOYMENT_NAME }}
             IMAGE=${{ env.IMAGE_NAME }}:latest
-            K8S_DIR="/home/${{ secrets.SERVER_USER }}/k8s"
+            K8S_DIR="/home/${{ secrets.SERVER_USER }}/k8s/k8s"
 
             sudo k3s crictl pull $IMAGE
             sudo k3s kubectl apply -f $K8S_DIR/
