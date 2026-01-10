@@ -1,3 +1,4 @@
+/*
 package com.team5.studygroup.user.service
 
 import com.team5.studygroup.dto.LoginDto
@@ -39,4 +40,4 @@ class UserService(
         val authentication = authenticationManagerBuilder.`object`.authenticate(authenticationToken)
         return jwtTokenProvider.createToken(authentication)
     }
-}
+}*/
