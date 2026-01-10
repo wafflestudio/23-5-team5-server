@@ -1,3 +1,4 @@
+/*
 package com.team5.studygroup.user.controller
 
 import com.team5.studygroup.dto.LoginDto
@@ -17,4 +18,4 @@ class AuthController(
     @PostMapping("/login")
     fun login(@RequestBody loginDto: LoginDto): TokenInfo =
         memberService.login(loginDto)
-}
+}*/

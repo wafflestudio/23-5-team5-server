@@ -1,7 +1,7 @@
 spring:
   # DB 설정 (JDBC)
   datasource:
-    url: jdbc:mysql://localhost:3306/${DB_NAME:seminar2025}?allowPublicKeyRetrieval=true&useSSL=false
+    url: jdbc:mysql://localhost:3307/${DB_NAME:seminar2025}?allowPublicKeyRetrieval=true&useSSL=false
     username: ${DB_USER:user}
     password: ${DB_PASSWORD:somepassword}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -19,7 +19,7 @@ spring:
   cloud:
     aws:
       s3:
-        bucket: ${S3_BUCKET_NAME}
+        bucket: ${S3_BUCKET_NAME:my-studygroup-bucket}
       region:
         static: ap-northeast-2
       stack:
@@ -27,7 +27,7 @@ spring:
 
 # JWT 설정
 jwt:
-  secret: ${JWT_SECRET}
+  secret: ${JWT_SECRET:your-super-secret-key-at-least-32-characters-long}
   expiration-in-ms: 86400000
 
 # Swagger
