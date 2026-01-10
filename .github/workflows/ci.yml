@@ -1,4 +1,4 @@
-name: Run Tests
+name: CI
 
 on:
   push:
@@ -21,6 +21,21 @@ jobs:
           --health-timeout 5s
           --health-retries 20
 
+      mysql:
+        image: mysql:8.0
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: toyproject-team5
+          MYSQL_USER: waffle
+          MYSQL_PASSWORD: somepassword
+        options: >-
+          --health-cmd "mysqladmin ping -h localhost -uroot -proot"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
     steps:
       - uses: actions/checkout@v4
 
@@ -29,6 +44,9 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+
+      - name: Execute permission for gradlew
+        run: chmod +x gradlew
 
       - name: Run ktlint
         run: ./gradlew ktlintCheck
