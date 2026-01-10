@@ -1,6 +1,6 @@
 package com.team5.studygroup.jwt
 
-import com.team5.studygroup.dto.TokenInfo
+import com.team5.studygroup.user.dto.TokenInfo
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
