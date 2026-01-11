@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/groups")
 class GroupController(
-    private val groupService: GroupService
+    private val groupService: GroupService,
 ) {
     @PostMapping("")
     fun createGroup(
@@ -36,5 +36,4 @@ class GroupController(
     ): String {
         return groupService.expireGroup(expireGroupDto)
     }
-
 }
