@@ -12,6 +12,12 @@ class User(
     val username: String,
     val password: String,
     val email: String,
+    val major: String,
+    val studentNumber: String,
+    val nickname: String,
+    val isVerified: Boolean,
+    val profileImageUrl: String,
+    val bio: String,
     @CreatedDate
     val createdAt: Instant? = null,
     @LastModifiedDate
