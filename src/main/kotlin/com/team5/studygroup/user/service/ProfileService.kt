@@ -1,5 +1,8 @@
 package com.team5.studygroup.user.service
 
+import org.springframework.stereotype.Service
+
+@Service
 class ProfileService {
     fun postProfile(
         userId: Long,

@@ -1,5 +1,8 @@
 package com.team5.studygroup.group.service
 
+import org.springframework.stereotype.Service
+
+@Service
 class SearchService {
     fun searchAll(): String {
         return "전체 스터디그룹 조회"
