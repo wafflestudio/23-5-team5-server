@@ -12,4 +12,8 @@ class SearchService {
     fun searchByKeyword(keyword: String): String {
         return "$keyword 키워드 스터디그룹 조회"
     }
+
+    fun searchMyGroup(userId: Long): String {
+        return "$userId 유저의 스터디그룹 조회"
+    }
 }

@@ -29,4 +29,11 @@ class SearchController(
     ): String {
         return searchService.searchByKeyword(keyword)
     }
+
+    @GetMapping("/me")
+    fun searchMyGroup(
+        @PathVariable("userId") userId: Long,
+    ): String {
+        return searchService.searchMyGroup(userId)
+    }
 }
