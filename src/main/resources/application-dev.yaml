@@ -1,0 +1,35 @@
+spring:
+  datasource:
+    # 로컬 도커용 3307 포트
+    url: jdbc:mysql://localhost:3307/toyproject-team5?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+    username: waffle
+    password: somepassword # 본인 로컬 DB 비번
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update # 로컬에선 엔티티 수정 시 테이블 자동 업데이트
+    show-sql: true # 쿼리 로그 보기
+    properties:
+      hibernate:
+        format_sql: true
+
+  # 로컬용 AWS 설정 (에러 방지용)
+  cloud:
+    aws:
+      region:
+        static: ap-northeast-2
+      stack:
+        enabled: false
+
+# 개발 환경에선 스웨거 ON
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+  api-docs:
+    enabled: true
+
+jwt:
+  secret: ${JWT_SECRET:your_default_dev_secret_key_more_than_32_characters}
+  expiration-time: 86400000

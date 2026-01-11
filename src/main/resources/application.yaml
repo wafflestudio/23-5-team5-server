@@ -1,41 +1,11 @@
 spring:
-  # DB 설정 (JDBC)
-  datasource:
-    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3307}/${DB_NAME:toyproject-team5}?allowPublicKeyRetrieval=true&useSSL=false
-    username: ${DB_USER:waffle}
-    password: ${DB_PASSWORD:somepassword}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+  profiles:
+    active: dev
 
-  flyway:
-    enabled: true
+  application:
+    name: studygroup
 
-  # Redis 설정
-  data:
-    redis:
-      host: ${REDIS_HOST:localhost}
-      port: ${REDIS_PORT:6379}
-
-  # S3 설정 (AWS IAM 이용)
-  cloud:
-    aws:
-      s3:
-        bucket: ${S3_BUCKET_NAME:dummy-bucket}
-      region:
-        static: ap-northeast-2
-      stack:
-        auto: false
-
-# JWT 설정
-jwt:
-  secret: ${JWT_SECRET:secret-key-for-local-development-only}
-  expiration-in-ms: 86400000
-
-# Swagger
-springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
-
-# SQL 로그 확인
-logging:
-  level:
-    org.springframework.jdbc.core.JdbcTemplate: DEBUG
+  jackson:
+    property-naming-strategy: SNAKE_CASE # 안드로이드와 통신 시 스네이크 케이스 권장
+    serialization:
+      write-dates-as-timestamps: false
