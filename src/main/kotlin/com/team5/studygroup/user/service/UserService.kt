@@ -31,6 +31,12 @@ class UserService(
                 username = signUpDto.username,
                 password = signUpDto.password,
                 email = signUpDto.email,
+                major = "",
+                studentNumber = "",
+                nickname = "",
+                isVerified = false,
+                profileImageUrl = "",
+                bio = "",
             )
 
         userRepository.save(member)
