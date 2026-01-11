@@ -26,6 +26,7 @@ class SecurityConfig(
             .authorizeHttpRequests {
                 it.requestMatchers(
                     "/ping",
+                    "/swagger-ui.html",
                     "/swagger-ui/**",
                     "/v3/api-docs/**",
                 ).permitAll()
