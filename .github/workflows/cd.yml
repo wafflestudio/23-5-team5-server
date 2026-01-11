@@ -74,11 +74,28 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: 22
+          # 1. GitHub Secrets를 SSH 환경 변수로 전달
+          envs: MYSQL_PASSWORD, JWT_SECRET, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
+        env:
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
           script: |
             DEPLOYMENT=${{ env.DEPLOYMENT_NAME }}
             IMAGE=${{ env.IMAGE_NAME }}:latest
             K8S_DIR="/home/${{ secrets.SERVER_USER }}/k8s/k8s"
-
+            
+            # 2. 서버에 실시간으로 Secret 생성/업데이트 (파일 필요 없음!)
+            sudo k3s kubectl create secret generic team5-secrets \
+              --from-literal=mysql-user-password="$MYSQL_PASSWORD" \
+              --from-literal=jwt-secret="$JWT_SECRET" \
+              --from-literal=aws-access-key="$AWS_ACCESS_KEY_ID" \
+              --from-literal=aws-secret-key="$AWS_SECRET_ACCESS_KEY" \
+              --dry-run=client -o yaml | sudo k3s kubectl apply -f -
+            
+            # 3. 기존 배포 프로세스 진행
             sudo k3s crictl pull $IMAGE
             sudo k3s kubectl apply -f $K8S_DIR/ --validate=false
             sudo k3s kubectl rollout restart deployment $DEPLOYMENT

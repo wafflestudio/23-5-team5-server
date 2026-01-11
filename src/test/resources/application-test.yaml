@@ -1,24 +1,45 @@
 spring:
+  # 단일 파일인 경우 on-profile 대신 파일명(application-test.yml)으로 인식되지만,
+  # 명시해두는 것도 안전합니다.
   config:
     activate:
       on-profile: test
 
+  # 1. H2 인메모리 DB 설정 (MySQL 모드)
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    url: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     username: sa
     password:
 
+  # 2. JPA 설정 (테스트 시 테이블 자동 생성)
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+
+  # 3. AWS 더미 설정 (이게 없으면 리전 에러로 테스트가 깨집니다)
   cloud:
     aws:
       region:
         static: ap-northeast-2
       credentials:
-        access-key: dummy
-        secret-key: dummy
+        access-key: dummy-key
+        secret-key: dummy-secret
+      stack:
+        enabled: false # CloudFormation 탐색 끄기
+
+# 4. JWT 더미 설정 (에러의 주범인 'Placeholder' 해결용)
+jwt:
+  secret: your-test-secret-key-must-be-very-long-32-characters-minimum
+  expiration-time: 3600000
 
 logging:
   level:
     root: INFO
-    org.springframework.jdbc.core: DEBUG # JDBC 쿼리 로그
+    org.springframework.jdbc.core: DEBUG
     com.team5.studygroup: DEBUG
