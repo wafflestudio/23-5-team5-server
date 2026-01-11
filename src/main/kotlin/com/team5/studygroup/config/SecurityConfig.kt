@@ -24,7 +24,12 @@ class SecurityConfig(
             .csrf { it.disable() }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests {
-                it.requestMatchers("/ping").permitAll()
+                it.requestMatchers(
+                    "/ping",
+                    "/swagger-ui.html",
+                    "/swagger-ui/**",
+                    "/v3/api-docs/**",
+                ).permitAll()
                     .requestMatchers("/members/login", "/members/signup").anonymous()
                     .anyRequest().authenticated()
             }
