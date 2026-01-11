@@ -12,8 +12,14 @@ class UserRepository(private val jdbcTemplate: JdbcTemplate) {
             User(
                 id = rs.getLong("id"),
                 username = rs.getString("username"),
-                email = rs.getString("email"),
                 password = rs.getString("password"),
+                email = rs.getString("email"),
+                major = rs.getString("major"),
+                studentNumber = rs.getString("student_number"),
+                nickname = rs.getString("nickname"),
+                isVerified = rs.getBoolean("is_verified"),
+                profileImageUrl = rs.getString("profile_image_url"),
+                bio = rs.getString("bio"),
                 createdAt = rs.getTimestamp("created_at")?.toInstant(),
                 updatedAt = rs.getTimestamp("updated_at")?.toInstant(),
             )
@@ -21,10 +27,21 @@ class UserRepository(private val jdbcTemplate: JdbcTemplate) {
 
     fun save(user: User): Int {
         return jdbcTemplate.update(
-            "INSERT INTO users (username, email, password, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())",
+            """
+            INSERT INTO users (
+                username, password, email, major, student_number, 
+                nickname, is_verified, profile_image_url, bio, created_at, updated_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
+            """.trimIndent(),
             user.username,
-            user.email,
             user.password,
+            user.email,
+            user.major,
+            user.studentNumber,
+            user.nickname,
+            user.isVerified,
+            user.profileImageUrl,
+            user.bio,
         )
     }
 
