@@ -5,6 +5,13 @@ spring:
   application:
     name: studygroup
 
+  cloud:
+    aws:
+      region:
+        static: ap-northeast-2
+      stack:
+        enabled: false
+
   jackson:
     property-naming-strategy: SNAKE_CASE # 안드로이드와 통신 시 스네이크 케이스 권장
     serialization:
