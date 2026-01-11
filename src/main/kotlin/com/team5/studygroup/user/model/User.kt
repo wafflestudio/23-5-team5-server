@@ -25,6 +25,24 @@ class User(
     var password: String,
     @Column(nullable = false, unique = true)
     var email: String,
+    // 학과
+    @Column(nullable = false)
+    var major: String = "",
+    // 학번
+    @Column(nullable = false, unique = true)
+    var studentNumber: String = "",
+    // 닉네임
+    @Column(nullable = false, unique = true)
+    var nickname: String = "",
+    // 인증 여부
+    @Column(nullable = false)
+    var isVerified: Boolean = false,
+    // 프로필 이미지 경로
+    @Column(length = 512)
+    var profileImageUrl: String? = null,
+    // 자기소개
+    @Column(columnDefinition = "TEXT")
+    var bio: String? = null,
     @CreatedDate
     @Column(updatable = false)
     var createdAt: Instant? = null,
