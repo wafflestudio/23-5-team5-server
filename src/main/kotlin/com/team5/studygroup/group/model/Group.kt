@@ -6,7 +6,7 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.annotation.LastModifiedDate
 import java.time.Instant
 
-@Table(name = "Group")
+@Table(name = "groups")
 class Group(
     @Id val id: Long? = null,
     val groupName: String,
