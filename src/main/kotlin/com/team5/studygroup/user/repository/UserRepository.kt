@@ -14,11 +14,14 @@ interface UserRepository : JpaRepository<User, Long> {
 
     fun findByNickname(nickname: String): User?
 
-    @Query("""
+    @Query(
+        """
         SELECT u.*
         FROM users u
         JOIN user_groups ug ON ug.user_id = u.id
         WHERE ug.group_id = ?1
-    """, nativeQuery = true)
+    """,
+        nativeQuery = true,
+    )
     fun findUsersInGroup(groupId: Long): List<User>
 }
