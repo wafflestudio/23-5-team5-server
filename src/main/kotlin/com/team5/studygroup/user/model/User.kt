@@ -32,7 +32,7 @@ class User(
     @Column(nullable = true, unique = true)
     var studentNumber: String? = null,
     // 닉네임
-    @Column(nullable = false, unique = true)
+    @Column(nullable = true, unique = true)
     var nickname: String? = null,
     // 인증 여부
     @Column(nullable = true)
@@ -61,5 +61,20 @@ class User(
         this.nickname = nickname ?: this.nickname
         this.profileImageUrl = profileImageUrl ?: this.profileImageUrl
         this.bio = bio ?: this.bio
+    }
+
+    // 최초 등록용: 학번까지 포함
+    fun registerProfile(
+        studentNumber: String,
+        major: String,
+        nickname: String,
+        profileImageUrl: String?,
+        bio: String?,
+    ) {
+        this.studentNumber = studentNumber
+        this.major = major
+        this.nickname = nickname
+        this.profileImageUrl = profileImageUrl
+        this.bio = bio
     }
 }
