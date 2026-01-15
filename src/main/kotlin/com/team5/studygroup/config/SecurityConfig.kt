@@ -25,10 +25,10 @@ class SecurityConfig(
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests {
                 it.requestMatchers(
-                    "/ping",
+                    "/api/ping",
                     "/swagger-ui.html",
                     "/swagger-ui/**",
-                    "/v3/api-docs/**",
+                    "/api/v3/api-docs/**",
                 ).permitAll()
                     .requestMatchers("/members/login", "/members/signup").anonymous()
                     .anyRequest().authenticated()
