@@ -26,26 +26,40 @@ class User(
     @Column(nullable = false, unique = true)
     var email: String,
     // 학과
-    @Column(nullable = false)
-    var major: String = "",
+    @Column(nullable = true)
+    var major: String? = null,
     // 학번
-    @Column(nullable = false, unique = true)
-    var studentNumber: String = "",
+    @Column(nullable = true, unique = true)
+    var studentNumber: String? = null,
     // 닉네임
     @Column(nullable = false, unique = true)
-    var nickname: String = "",
+    var nickname: String? = null,
     // 인증 여부
-    @Column(nullable = false)
-    var isVerified: Boolean = false,
+    @Column(nullable = true)
+    var isVerified: Boolean? = false,
     // 프로필 이미지 경로
-    @Column(length = 512)
+    @Column(length = 512, nullable = true)
     var profileImageUrl: String? = null,
     // 자기소개
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT", nullable = true)
     var bio: String? = null,
     @CreatedDate
-    @Column(updatable = false)
+    @Column(nullable = false, updatable = false)
     var createdAt: Instant? = null,
     @LastModifiedDate
+    @Column(nullable = false)
     var updatedAt: Instant? = null,
-)
+) {
+    fun updateProfile(
+        major: String?,
+        nickname: String?,
+        profileImageUrl: String?,
+        bio: String?,
+    ) {
+        // 파라미터가 null이면 기존 값(this.xxx)을 그대로 유지합니다.
+        this.major = major ?: this.major
+        this.nickname = nickname ?: this.nickname
+        this.profileImageUrl = profileImageUrl ?: this.profileImageUrl
+        this.bio = bio ?: this.bio
+    }
+}
