@@ -12,19 +12,21 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/auth")
 class AuthController(
-    private val memberService: UserService,
     private val userService: UserService,
 ) {
     @PostMapping("/signup")
     fun signUp(
         @RequestBody signUpDto: SignUpDto,
-    ): String = memberService.signUp(signUpDto)
+    ): ResponseEntity<String> {
+        val message = userService.signUp(signUpDto)
+        return ResponseEntity.ok(message)
+    }
 
     @PostMapping("/login")
     fun login(
         @RequestBody loginDto: LoginDto,
     ): ResponseEntity<String> {
-        val result = userService.login(loginDto)
-        return ResponseEntity.ok(result) // 이제 String을 반환하므로 에러가 사라집니다.
+        val token = userService.login(loginDto)
+        return ResponseEntity.ok(token)
     }
 }
