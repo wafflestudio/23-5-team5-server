@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
-@RestControllerAdvice // 모든 RestController의 예외를 여기서 가로챔
+// @RestControllerAdvice // 모든 RestController의 예외를 여기서 가로챔
 class GlobalExceptionHandler {
     @ExceptionHandler(DomainException::class)
     fun handleDomainException(e: DomainException): ResponseEntity<ErrorResponse> {
