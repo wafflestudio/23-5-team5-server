@@ -13,19 +13,22 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.Instant
 
 @Entity
-@Table(name = "groups")
+@Table(name = "study_groups")
 @EntityListeners(AuditingEntityListener::class) // 생성/수정일 자동 기록을 위해 필요
 class Group(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
+    @Column(nullable = false)
     val groupName: String,
+    @Column(columnDefinition = "TEXT")
     val description: String,
-    val categoryId: Int,
-    val subCategoryId: Int,
-    val capacity: Int,
+    val categoryId: Long,
+    val subCategoryId: Long,
+    val capacity: Int? = null,
     val leaderId: Long? = null,
     val isOnline: Boolean,
+    val location: String,
     val status: String,
     @CreatedDate
     @Column(updatable = false)

@@ -18,8 +18,8 @@ interface GroupRepository : JpaRepository<Group, Long> {
     @Query(
         """
         SELECT g.*
-        FROM groups g
-        JOIN user_groups ug ON ug.group_id = g.id
+        FROM study_groups g
+        JOIN user_study_groups ug ON ug.group_id = g.id
         WHERE ug.user_id = ?1
     """,
         nativeQuery = true,
