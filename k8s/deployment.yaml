@@ -24,6 +24,19 @@ spec:
             - name: SPRING_PROFILES_ACTIVE
               value: "prod"
 
+            - name: PROD_GOOGLE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: google-oauth-secret
+                  key: PROD_GOOGLE_CLIENT_ID
+
+            - name: PROD_GOOGLE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: google-oauth-secret
+                  key: PROD_GOOGLE_CLIENT_SECRET
+
+
             # frontend 측에서도 swagger 볼 수 있도록
             - name: SPRINGDOC_SWAGGER_UI_ENABLED
               value: "true"

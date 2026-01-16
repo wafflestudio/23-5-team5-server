@@ -56,6 +56,15 @@ jobs:
       - name: Run Tests
         run: ./gradlew test
         env:
+          # [핵심 1] 스프링 프로필을 'test'로 강제 고정
+          SPRING_PROFILES_ACTIVE: test
+
+          # [핵심 2] 파일 설정 무시하고 환경변수로 H2 DB 강제 주입 (가장 강력함)
+          SPRING_DATASOURCE_URL: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1
+          SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.h2.Driver
+          SPRING_DATASOURCE_USERNAME: sa
+          SPRING_DATASOURCE_PASSWORD: password
+
           # AWS SDK가 "아, 설정이 있구나"라고 속게 만드는 가짜 정보입니다.
           AWS_ACCESS_KEY_ID: dummy
           AWS_SECRET_ACCESS_KEY: dummy

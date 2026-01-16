@@ -16,3 +16,6 @@ spring:
     property-naming-strategy: SNAKE_CASE # 안드로이드와 통신 시 스네이크 케이스 권장
     serialization:
       write-dates-as-timestamps: false
+
+server:
+  forward-headers-strategy: native

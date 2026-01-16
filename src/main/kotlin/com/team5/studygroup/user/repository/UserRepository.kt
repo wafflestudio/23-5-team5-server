@@ -2,7 +2,6 @@ package com.team5.studygroup.user.repository
 
 import com.team5.studygroup.user.model.User
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -12,16 +11,9 @@ interface UserRepository : JpaRepository<User, Long> {
 
     fun findByUsername(username: String): User?
 
-    fun findByNickname(nickname: String): User?
+    fun existsByNickname(nickname: String): Boolean
 
-    @Query(
-        """
-        SELECT u.*
-        FROM users u
-        JOIN user_groups ug ON ug.user_id = u.id
-        WHERE ug.group_id = ?1
-    """,
-        nativeQuery = true,
-    )
-    fun findUsersInGroup(groupId: Long): List<User>
+    // fun findUsersInGroup(groupId: Long): List<User>
+
+    fun existsByStudentNumber(studentNumber: String): Boolean
 }
