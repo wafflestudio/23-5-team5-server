@@ -3,7 +3,6 @@ package com.team5.studygroup.common
 import com.team5.studygroup.DomainException
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
-import org.springframework.web.bind.annotation.RestControllerAdvice
 
 // @RestControllerAdvice // 모든 RestController의 예외를 여기서 가로챔
 class GlobalExceptionHandler {
