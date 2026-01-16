@@ -16,13 +16,15 @@ class UserGroupController(
 ) {
     @PostMapping("")
     fun joinGroup(
-        @RequestBody joinGroupDto: JoinGroupDto): String {
+        @RequestBody joinGroupDto: JoinGroupDto,
+    ): String {
         return userGroupService.joinGroup(joinGroupDto)
     }
 
     @DeleteMapping("")
     fun withdrawGroup(
-        @RequestBody withdrawGroupDto: WithdrawGroupDto): String {
+        @RequestBody withdrawGroupDto: WithdrawGroupDto,
+    ): String {
         return userGroupService.withdrawGroup(withdrawGroupDto)
     }
 }
