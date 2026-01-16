@@ -21,8 +21,8 @@ class User(
     val id: Long? = null,
     @Column(nullable = false, unique = true)
     var username: String,
-    @Column(nullable = false)
-    var password: String,
+    @Column(nullable = true)
+    var password: String? = null,
     @Column(nullable = false, unique = true)
     var email: String,
     // 학과

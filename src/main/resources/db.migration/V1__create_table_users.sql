@@ -1,14 +1,14 @@
 CREATE TABLE IF NOT EXISTS users
 (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(255) NOT NULL,
-    password VARCHAR(255) NOT NULL,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255),
     email VARCHAR(255) NOT NULL UNIQUE,
-    major VARCHAR(255),
-    student_number VARCHAR(255) UNIQUE,
-    nickname VARCHAR(255) UNIQUE,
-    is_verified BOOLEAN,
-    profile_image_url VARCHAR(255),
+    major VARCHAR(255) NOT NULL,
+    student_number VARCHAR(255) NOT NULL UNIQUE,
+    nickname VARCHAR(255) NOT NULL UNIQUE,
+    is_verified BOOLEAN NOT NULL,
+    profile_image_url VARCHAR(512),
     bio TEXT,
     created_at TIMESTAMP,
     updated_at TIMESTAMP

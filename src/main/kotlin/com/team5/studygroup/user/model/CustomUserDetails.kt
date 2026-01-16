@@ -13,7 +13,7 @@ class CustomUserDetails(private val user: User) : UserDetails {
         // You would typically load roles from your user object
         listOf(SimpleGrantedAuthority("ROLE_USER"))
 
-    override fun getPassword(): String = user.password
+    override fun getPassword(): String? = user.password
 
     override fun getUsername(): String = user.username
 
