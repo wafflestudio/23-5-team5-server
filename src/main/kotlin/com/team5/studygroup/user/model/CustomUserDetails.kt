@@ -1,4 +1,5 @@
-import com.team5.studygroup.user.model.User
+package com.team5.studygroup.user.model
+
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
@@ -6,12 +7,15 @@ import org.springframework.security.core.userdetails.UserDetails
 class CustomUserDetails(private val user: User) : UserDetails {
     // This custom property is how we'll access the user's ID.
     // The SpEL expression `expression = "id"` will resolve to this.
+
+    fun getUserEntity(): User = user
+
     val id: Long
         get() = user.id!!
 
     override fun getAuthorities(): Collection<GrantedAuthority> =
         // You would typically load roles from your user object
-        listOf(SimpleGrantedAuthority("ROLE_USER"))
+        listOf(SimpleGrantedAuthority(user.userRole.key))
 
     override fun getPassword(): String? = user.password
 
@@ -25,5 +29,5 @@ class CustomUserDetails(private val user: User) : UserDetails {
 
     override fun isCredentialsNonExpired(): Boolean = true
 
-    override fun isEnabled(): Boolean = true
+    override fun isEnabled(): Boolean = user.isVerified
 }
