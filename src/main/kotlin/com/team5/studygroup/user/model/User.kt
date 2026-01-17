@@ -3,6 +3,8 @@ package com.team5.studygroup.user.model
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EntityListeners
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
@@ -23,26 +25,28 @@ class User(
     var username: String,
     @Column(nullable = true)
     var password: String? = null,
-    @Column(nullable = false, unique = true)
-    var email: String,
     // 학과
-    @Column(nullable = true)
-    var major: String? = null,
+    @Column(nullable = false)
+    var major: String,
     // 학번
-    @Column(nullable = true, unique = true)
-    var studentNumber: String? = null,
+    @Column(nullable = false, unique = true)
+    var studentNumber: String,
     // 닉네임
-    @Column(nullable = true, unique = true)
-    var nickname: String? = null,
+    @Column(nullable = false, unique = true)
+    var nickname: String,
     // 인증 여부
-    @Column(nullable = true)
-    var isVerified: Boolean? = false,
+    @Column(nullable = false)
+    var isVerified: Boolean = false,
     // 프로필 이미지 경로
     @Column(length = 512, nullable = true)
     var profileImageUrl: String? = null,
     // 자기소개
     @Column(columnDefinition = "TEXT", nullable = true)
     var bio: String? = null,
+    // 권한
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_role", nullable = false)
+    var userRole: Role = Role.USER,
     @CreatedDate
     @Column(nullable = false, updatable = false)
     var createdAt: Instant? = null,
@@ -63,18 +67,5 @@ class User(
         this.bio = bio ?: this.bio
     }
 
-    // 최초 등록용: 학번까지 포함
-    fun registerProfile(
-        studentNumber: String,
-        major: String,
-        nickname: String,
-        profileImageUrl: String?,
-        bio: String?,
-    ) {
-        this.studentNumber = studentNumber
-        this.major = major
-        this.nickname = nickname
-        this.profileImageUrl = profileImageUrl
-        this.bio = bio
-    }
+    fun isAdmin(): Boolean = this.userRole == Role.ADMIN
 }

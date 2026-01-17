@@ -1,9 +1,7 @@
 package com.team5.studygroup.user.service
 
 import com.team5.studygroup.user.NicknameDuplicateException
-import com.team5.studygroup.user.StudentNumberDuplicateException
 import com.team5.studygroup.user.UserNotFoundException
-import com.team5.studygroup.user.dto.CreateProfileDto
 import com.team5.studygroup.user.dto.GetProfileDto
 import com.team5.studygroup.user.dto.UpdateProfileDto
 import com.team5.studygroup.user.repository.UserRepository
@@ -14,41 +12,6 @@ import org.springframework.transaction.annotation.Transactional
 class ProfileService(
     private val userRepository: UserRepository,
 ) {
-    /**
-     * 최초 프로필 등록 (학번 입력 필수, 중복 검사)
-     */
-    @Transactional
-    fun createProfile(
-        userId: Long,
-        dto: CreateProfileDto,
-    ): GetProfileDto {
-        // 1. 사용자 조회
-        val user =
-            userRepository.findById(userId)
-                .orElseThrow { UserNotFoundException() }
-
-        // 1. 학번 중복 체크 (최초 등록 시에만 수행)
-        if (userRepository.existsByStudentNumber(dto.studentNumber)) {
-            throw StudentNumberDuplicateException()
-        }
-
-        // 2. 닉네임 중복 체크
-        if (userRepository.existsByNickname(dto.nickname)) {
-            throw NicknameDuplicateException()
-        }
-
-        // 3. 전체 정보 업데이트
-        user.registerProfile(
-            studentNumber = dto.studentNumber,
-            major = dto.major,
-            nickname = dto.nickname,
-            profileImageUrl = dto.profileImageUrl,
-            bio = dto.bio,
-        )
-
-        return GetProfileDto.fromEntity(user)
-    }
-
     /**
      * 프로필 수정 (학번 수정 불가)
      * 수정된 결과를 GetProfileDto로 반환하여 즉시 클라이언트가 반영할 수 있게 함

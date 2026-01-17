@@ -1,9 +1,9 @@
 spring:
   datasource:
     # 로컬 도커용 3307 포트
-    url: jdbc:mysql://localhost:3307/toyproject-team5?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
-    username: waffle
-    password: somepassword # 본인 로컬 DB 비번
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3307}/${DB_NAME:toyproject-team5}?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+    username: ${DB_USER:waffle}
+    password: ${DB_PASSWORD:somepassword} # 본인 로컬 DB 비번
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:

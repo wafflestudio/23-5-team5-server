@@ -2,6 +2,7 @@ services:
   app:
     container_name: toyproject-team5
     build: .
+    restart: always
     ports:
       - "8080:8080"
     depends_on:
@@ -20,7 +21,7 @@ services:
       REDIS_PORT: 6379
 
       # 3. 기타 설정
-      JWT_SECRET: "secret-key-for-local-development-only"
+      JWT_SECRET: "your_default_dev_secret_key_more_than_32_characters"
       S3_BUCKET_NAME: "dummy-bucket"
 
   mysql:

@@ -30,8 +30,9 @@ class SecurityConfig(
                     "/swagger-ui/**",
                     "/api/v3/api-docs/**",
                     "/v3/api-docs/**",
+                    "/api/auth/signup",
+                    "/api/auth/login",
                 ).permitAll()
-                    .requestMatchers("/members/login", "/members/signup").anonymous()
                     .anyRequest().authenticated()
             }
             .addFilterBefore(
