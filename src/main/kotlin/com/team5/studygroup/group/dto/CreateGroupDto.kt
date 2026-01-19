@@ -6,8 +6,6 @@ data class CreateGroupDto(
     val categoryId: Long,
     val subCategoryId: Long,
     val capacity: Int? = null,
-    val leaderId: Long? = null,
     val isOnline: Boolean,
     val location: String,
-    val status: String,
 )
