@@ -1,5 +1,6 @@
 package com.team5.studygroup.group.model
 
+import com.team5.studygroup.group.GroupStatus
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EntityListeners
@@ -29,10 +30,14 @@ class Group(
     val leaderId: Long? = null,
     val isOnline: Boolean,
     val location: String,
-    val status: String,
+    var status: GroupStatus,
     @CreatedDate
     @Column(updatable = false)
     val createdAt: Instant? = null,
     @LastModifiedDate
     val updatedAt: Instant? = null,
-)
+) {
+    fun expire() {
+        this.status = GroupStatus.EXPIRED
+    }
+}

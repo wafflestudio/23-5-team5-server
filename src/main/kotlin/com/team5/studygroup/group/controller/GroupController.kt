@@ -4,6 +4,8 @@ import com.team5.studygroup.group.dto.CreateGroupDto
 import com.team5.studygroup.group.dto.DeleteGroupDto
 import com.team5.studygroup.group.dto.ExpireGroupDto
 import com.team5.studygroup.group.service.GroupService
+import com.team5.studygroup.user.LoggedInUser
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -19,21 +21,24 @@ class GroupController(
     @PostMapping("")
     fun createGroup(
         @RequestBody createGroupDto: CreateGroupDto,
-    ): String {
-        return groupService.createGroup(createGroupDto)
+        @LoggedInUser requestingUserId: Long,
+    ): ResponseEntity<Unit> {
+        return ResponseEntity.ok(groupService.createGroup(createGroupDto, requestingUserId))
     }
 
     @DeleteMapping("")
     fun deleteGroup(
         @RequestBody deleteGroupDto: DeleteGroupDto,
-    ): String {
-        return groupService.deleteGroup(deleteGroupDto)
+        @LoggedInUser requestingUserId: Long,
+    ): ResponseEntity<Unit> {
+        return ResponseEntity.ok(groupService.deleteGroup(deleteGroupDto, requestingUserId))
     }
 
     @PatchMapping("/expire")
     fun expireGroup(
         @RequestBody expireGroupDto: ExpireGroupDto,
-    ): String {
-        return groupService.expireGroup(expireGroupDto)
+        @LoggedInUser requestingUserId: Long,
+    ): ResponseEntity<Unit> {
+        return ResponseEntity.ok(groupService.expireGroup(expireGroupDto, requestingUserId))
     }
 }
