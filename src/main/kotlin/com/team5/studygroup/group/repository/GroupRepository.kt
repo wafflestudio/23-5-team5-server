@@ -1,5 +1,6 @@
 package com.team5.studygroup.group.repository
 
+import com.team5.studygroup.group.GroupStatus
 import com.team5.studygroup.group.model.Group
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -13,7 +14,7 @@ interface GroupRepository : JpaRepository<Group, Long> {
 
     fun findBySubCategoryId(subCategoryId: Long): List<Group>
 
-    fun findByStatus(status: String): List<Group>
+    fun findByStatus(status: GroupStatus): List<Group>
 
     @Query(
         """
