@@ -36,9 +36,10 @@ class ProfileService(
                 }
             }
         }
-        val newProfileImageUrl = dto.profileImage?.let { file ->
-            if (!file.isEmpty) s3Service.upload(file, "profile") else null
-        }
+        val newProfileImageUrl =
+            dto.profileImage?.let { file ->
+                if (!file.isEmpty) s3Service.upload(file, "profile") else null
+            }
         // 2. 엔티티 내부 메서드 호출 (Dirty Checking에 의해 자동 저장됨)
         user.updateProfile(
             major = dto.major,

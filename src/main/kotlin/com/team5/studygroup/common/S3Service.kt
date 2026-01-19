@@ -10,9 +10,12 @@ import java.util.UUID
 class S3Service(
     private val s3Template: S3Template,
     @Value("\${spring.cloud.aws.s3.bucket}")
-    private val bucketName: String
+    private val bucketName: String,
 ) {
-    fun upload(file: MultipartFile, dirName: String = "images"): String {
+    fun upload(
+        file: MultipartFile,
+        dirName: String = "images",
+    ): String {
         val fileName = "$dirName/${UUID.randomUUID()}-${file.originalFilename}"
 
         return s3Template.upload(bucketName, fileName, file.inputStream)
