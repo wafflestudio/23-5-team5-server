@@ -6,12 +6,12 @@ import java.time.Instant
 data class GetProfileDto(
     val userId: Long?,
     val username: String,
-    val email: String,
-    val major: String?,
-    val studentNumber: String?,
-    val nickname: String?,
+    val major: String,
+    val studentNumber: String,
+    val nickname: String,
     val profileImageUrl: String?,
     val bio: String?,
+    val role: String,
     val createdAt: Instant?,
 ) {
     companion object {
@@ -20,12 +20,12 @@ data class GetProfileDto(
             return GetProfileDto(
                 userId = user.id,
                 username = user.username,
-                email = user.email,
                 major = user.major,
                 studentNumber = user.studentNumber,
                 nickname = user.nickname,
                 profileImageUrl = user.profileImageUrl,
                 bio = user.bio,
+                role = user.userRole.description,
                 createdAt = user.createdAt,
             )
         }
