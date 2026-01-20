@@ -17,6 +17,4 @@ class UserGroup(
     val groupId: Long,
     @Column(name = "user_id", nullable = false)
     val userId: Long,
-    @Column(nullable = false)
-    val status: String,
 )

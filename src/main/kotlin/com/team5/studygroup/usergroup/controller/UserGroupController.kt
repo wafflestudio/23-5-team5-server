@@ -1,8 +1,10 @@
 package com.team5.studygroup.usergroup.controller
 
+import com.team5.studygroup.user.LoggedInUser
 import com.team5.studygroup.usergroup.dto.JoinGroupDto
 import com.team5.studygroup.usergroup.dto.WithdrawGroupDto
 import com.team5.studygroup.usergroup.service.UserGroupService
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -17,14 +19,16 @@ class UserGroupController(
     @PostMapping("")
     fun joinGroup(
         @RequestBody joinGroupDto: JoinGroupDto,
-    ): String {
-        return userGroupService.joinGroup(joinGroupDto)
+        @LoggedInUser requestingUserId: Long,
+    ): ResponseEntity<Unit> {
+        return ResponseEntity.ok(userGroupService.joinGroup(joinGroupDto, requestingUserId))
     }
 
     @DeleteMapping("")
     fun withdrawGroup(
         @RequestBody withdrawGroupDto: WithdrawGroupDto,
-    ): String {
-        return userGroupService.withdrawGroup(withdrawGroupDto)
+        @LoggedInUser requestingUserId: Long,
+    ): ResponseEntity<Unit> {
+        return ResponseEntity.ok(userGroupService.withdrawGroup(withdrawGroupDto, requestingUserId))
     }
 }
