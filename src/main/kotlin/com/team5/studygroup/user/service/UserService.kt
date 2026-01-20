@@ -50,7 +50,7 @@ class UserService(
                 bio = null,
             )
         userRepository.save(member)
-        val accessToken = jwtTokenProvider.createToken(member.username)
+        val accessToken = jwtTokenProvider.createAccessToken(member.username)
         return SignUpResponseDto(
             accessToken = accessToken,
             username = member.username,
@@ -71,7 +71,7 @@ class UserService(
             throw IllegalArgumentException("아이디 또는 비밀번호가 잘못되었습니다.")
         }
 
-        val accessToken = jwtTokenProvider.createToken(member.username)
+        val accessToken = jwtTokenProvider.createAccessToken(member.username)
 
         return LoginResponseDto(
             accessToken = accessToken,

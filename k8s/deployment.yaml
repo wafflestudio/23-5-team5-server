@@ -91,3 +91,14 @@ spec:
               value: "ap-northeast-2"
             - name: AWS_DEFAULT_REGION
               value: "ap-northeast-2"
+
+            - name: MAIL_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: mail-config
+                  key: MAIL_USERNAME
+            - name: MAIL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mail-secret
+                  key: MAIL_PASSWORD
