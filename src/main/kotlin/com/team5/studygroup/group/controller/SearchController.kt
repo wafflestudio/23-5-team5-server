@@ -1,9 +1,13 @@
 package com.team5.studygroup.group.controller
 
+import GroupResponse
 import com.team5.studygroup.group.service.SearchService
+import com.team5.studygroup.user.LoggedInUser
+import com.team5.studygroup.user.model.User
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -12,28 +16,19 @@ class SearchController(
     private val searchService: SearchService,
 ) {
     @GetMapping("")
-    fun searchAll(): String {
-        return searchService.searchAll()
-    }
-
-    @GetMapping("/{categoryId}")
-    fun searchByCategory(
-        @PathVariable("categoryId") categoryId: Int,
-    ): String {
-        return searchService.searchByCategory(categoryId)
-    }
-
-    @GetMapping("/{keyword}")
-    fun searchByKeyword(
-        @PathVariable("keyword") keyword: String,
-    ): String {
-        return searchService.searchByKeyword(keyword)
+    fun search(
+        @RequestParam(required = false) categoryId: Long?,
+        @RequestParam(required = false) keyword: String?,
+    ): ResponseEntity<List<GroupResponse>> {
+        val result = searchService.search(categoryId, keyword)
+        return ResponseEntity.ok(result)
     }
 
     @GetMapping("/me")
     fun searchMyGroup(
-        @PathVariable("userId") userId: Long,
-    ): String {
-        return searchService.searchMyGroup(userId)
+        @LoggedInUser user: User,
+    ): ResponseEntity<List<GroupResponse>> {
+        val result = searchService.searchMyGroup(user.id!!)
+        return ResponseEntity.ok(result)
     }
 }
