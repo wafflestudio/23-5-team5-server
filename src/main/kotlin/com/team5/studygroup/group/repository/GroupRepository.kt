@@ -1,9 +1,9 @@
 package com.team5.studygroup.group.repository
 
-import com.team5.studygroup.group.GroupStatus
 import com.team5.studygroup.group.model.Group
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -12,18 +12,21 @@ interface GroupRepository : JpaRepository<Group, Long> {
 
     fun findByCategoryId(categoryId: Long): List<Group>
 
-    fun findBySubCategoryId(subCategoryId: Long): List<Group>
+    fun findByGroupNameContainingOrDescriptionContaining(
+        groupName: String,
+        description: String,
+    ): List<Group>
 
-    fun findByStatus(status: GroupStatus): List<Group>
-
+    // 카테고리 + 키워드 동시 검색
     @Query(
         """
-        SELECT g.*
-        FROM study_groups g
-        JOIN user_study_groups ug ON ug.group_id = g.id
-        WHERE ug.user_id = ?1
+        SELECT g FROM Group g 
+        WHERE g.categoryId = :categoryId 
+        AND (g.groupName LIKE %:keyword% OR g.description LIKE %:keyword%)
     """,
-        nativeQuery = true,
     )
-    fun findGroupsByUser(userId: Long): List<Group>
+    fun findByCategoryIdAndKeyword(
+        @Param("categoryId") categoryId: Long,
+        @Param("keyword") keyword: String,
+    ): List<Group>
 }
