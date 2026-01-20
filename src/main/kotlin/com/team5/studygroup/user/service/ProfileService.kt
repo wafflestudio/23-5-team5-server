@@ -1,5 +1,6 @@
 package com.team5.studygroup.user.service
 
+import com.team5.studygroup.common.S3Service
 import com.team5.studygroup.user.NicknameDuplicateException
 import com.team5.studygroup.user.UserNotFoundException
 import com.team5.studygroup.user.dto.GetProfileDto
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class ProfileService(
     private val userRepository: UserRepository,
+    private val s3Service: S3Service,
 ) {
     /**
      * 프로필 수정 (학번 수정 불가)
@@ -34,12 +36,15 @@ class ProfileService(
                 }
             }
         }
-
+        val newProfileImageUrl =
+            dto.profileImage?.let { file ->
+                if (!file.isEmpty) s3Service.upload(file, "profile") else null
+            }
         // 2. 엔티티 내부 메서드 호출 (Dirty Checking에 의해 자동 저장됨)
         user.updateProfile(
             major = dto.major,
             nickname = dto.nickname,
-            profileImageUrl = dto.profileImageUrl,
+            profileImageUrl = newProfileImageUrl,
             bio = dto.bio,
         )
 

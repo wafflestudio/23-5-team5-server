@@ -32,6 +32,11 @@ spring:
   # 로컬용 AWS 설정 (에러 방지용)
   cloud:
     aws:
+      s3:
+        bucket: local-dummy-bucket
+      credentials:
+        access-key: dummy-access-key
+        secret-key: dummy-secret-key
       region:
         static: ap-northeast-2
       stack:

@@ -25,6 +25,8 @@ spring:
   # 3. AWS 더미 설정 (이게 없으면 리전 에러로 테스트가 깨집니다)
   cloud:
     aws:
+      s3:
+        bucket: test-dummy-bucket
       region:
         static: ap-northeast-2
       credentials:
