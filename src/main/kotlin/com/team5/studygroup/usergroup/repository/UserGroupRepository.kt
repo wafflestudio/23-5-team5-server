@@ -14,4 +14,9 @@ interface UserGroupRepository : JpaRepository<UserGroup, Long> {
         groupId: Long,
         userId: Long,
     ): UserGroup?
+
+    fun deleteByGroupIdAndUserId(
+        groupId: Long,
+        userId: Long,
+    )
 }
