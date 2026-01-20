@@ -6,6 +6,21 @@ spring:
     password: ${DB_PASSWORD:somepassword} # 본인 로컬 DB 비번
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
   jpa:
     hibernate:
       ddl-auto: update # 로컬에선 엔티티 수정 시 테이블 자동 업데이트

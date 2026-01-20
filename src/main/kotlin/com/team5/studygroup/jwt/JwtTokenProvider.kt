@@ -27,12 +27,31 @@ class JwtTokenProvider(
 
     // ... 아래 코드는 그대로 두셔도 됩니다 ...
 
-    fun createToken(username: String): String {
+    fun createAccessToken(username: String): String {
         val now = Date()
         val validity = Date(now.time + expirationInMs)
 
         return Jwts.builder()
             .setSubject(username)
+            .setIssuedAt(now)
+            .setExpiration(validity)
+            .signWith(key, SignatureAlgorithm.HS256)
+            .compact()
+    }
+
+    fun createRegisterToken(
+        provider: String,
+        providerId: String,
+        email: String,
+    ): String {
+        val now = Date()
+        val validity = Date(now.time + (30 * 60 * 1000L)) // 30분 유효
+
+        return Jwts.builder()
+            .setSubject("register")
+            .claim("provider", provider)
+            .claim("providerId", providerId)
+            .claim("email", email)
             .setIssuedAt(now)
             .setExpiration(validity)
             .signWith(key, SignatureAlgorithm.HS256)
@@ -51,6 +70,10 @@ class JwtTokenProvider(
     fun validateToken(token: String): Boolean {
         getClaims(token)
         return true
+    }
+
+    fun getRegisterClaims(token: String): Claims {
+        return getClaims(token)
     }
 
     private fun getClaims(token: String): Claims {
