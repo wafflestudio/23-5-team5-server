@@ -22,6 +22,18 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.H2Dialect
 
+  mail:
+    host: localhost
+    port: 1025
+    username: test-user
+    password: test-password
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+
   # 3. AWS 더미 설정 (이게 없으면 리전 에러로 테스트가 깨집니다)
   cloud:
     aws:
