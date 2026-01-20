@@ -7,8 +7,8 @@ import com.team5.studygroup.user.service.ProfileService
 import io.swagger.v3.oas.annotations.Parameter
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PatchMapping
-import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -18,9 +18,9 @@ class UserController(
     private val profileService: ProfileService,
 ) {
     // 프로필 수정
-    @PatchMapping("")
+    @PatchMapping("", consumes = ["multipart/form-data"])
     fun updateProfile(
-        @RequestBody updateProfileDto: UpdateProfileDto,
+        @ModelAttribute updateProfileDto: UpdateProfileDto,
         @Parameter(hidden = true) @LoggedInUser userId: Long,
     ): ResponseEntity<GetProfileDto> {
         val response = profileService.updateProfile(userId, updateProfileDto)
