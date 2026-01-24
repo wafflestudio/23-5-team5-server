@@ -8,6 +8,7 @@ import com.team5.studygroup.user.dto.UpdateProfileDto
 import com.team5.studygroup.user.repository.UserRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.multipart.MultipartFile
 
 @Service
 class ProfileService(
@@ -60,6 +61,27 @@ class ProfileService(
         val user =
             userRepository.findById(userId)
                 .orElseThrow { UserNotFoundException() }
+
+        return GetProfileDto.fromEntity(user)
+    }
+
+    @Transactional
+    fun updateProfileImage(
+        userId: Long,
+        profileImage: MultipartFile,
+    ): GetProfileDto {
+        val user =
+            userRepository.findById(userId)
+                .orElseThrow { UserNotFoundException() }
+
+        val newProfileImageUrl =
+            if (!profileImage.isEmpty) {
+                s3Service.upload(profileImage, "profile")
+            } else {
+                null
+            }
+
+        user.updateProfile(profileImageUrl = newProfileImageUrl)
 
         return GetProfileDto.fromEntity(user)
     }

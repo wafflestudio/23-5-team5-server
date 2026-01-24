@@ -67,5 +67,9 @@ class User(
         this.bio = bio ?: this.bio
     }
 
+    fun updateProfile(profileImageUrl: String?) {
+        this.profileImageUrl = profileImageUrl ?: this.profileImageUrl
+    }
+
     fun isAdmin(): Boolean = this.userRole == Role.ADMIN
 }

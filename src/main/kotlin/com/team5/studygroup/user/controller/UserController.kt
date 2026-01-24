@@ -9,8 +9,11 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PatchMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.multipart.MultipartFile
 
 @RestController
 @RequestMapping("/users/me")
@@ -33,6 +36,16 @@ class UserController(
         @Parameter(hidden = true) @LoggedInUser userId: Long,
     ): ResponseEntity<GetProfileDto> {
         val response = profileService.getProfile(userId = userId)
+        return ResponseEntity.ok(response)
+    }
+
+    // 프로필 이미지 수정
+    @PutMapping("/profile-image", consumes = ["multipart/form-data"])
+    fun updateProfileImage(
+        @RequestParam("profile_image") profileImage: MultipartFile,
+        @Parameter(hidden = true) @LoggedInUser userId: Long,
+    ): ResponseEntity<GetProfileDto> {
+        val response = profileService.updateProfileImage(userId, profileImage)
         return ResponseEntity.ok(response)
     }
 }
