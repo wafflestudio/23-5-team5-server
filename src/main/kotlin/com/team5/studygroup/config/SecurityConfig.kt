@@ -32,6 +32,7 @@ class SecurityConfig(
                     "/v3/api-docs/**",
                     "/api/auth/signup",
                     "/api/auth/login",
+                    "/api/oauth/login/**",
                 ).permitAll()
                     .anyRequest().authenticated()
             }
