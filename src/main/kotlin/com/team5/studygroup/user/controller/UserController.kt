@@ -30,29 +30,30 @@ class UserController(
 ) {
     @Operation(
         summary = "내 프로필 수정",
-        description = "닉네임, 전공, 자기소개, 프로필 이미지를 수정합니다.\n\n" +
+        description =
+            "닉네임, 전공, 자기소개, 프로필 이미지를 수정합니다.\n\n" +
                 "- **Multipart/form-data** 형식으로 요청해야 합니다.\n" +
                 "- 변경하지 않을 필드는 null로 보내면 기존 값이 유지됩니다.\n" +
-                "- 닉네임 변경 시 중복 검사가 수행됩니다."
+                "- 닉네임 변경 시 중복 검사가 수행됩니다.",
     )
     @ApiResponses(
         value = [
             ApiResponse(
                 responseCode = "200",
                 description = "프로필 수정 성공 (수정된 정보 반환)",
-                content = [Content(schema = Schema(implementation = GetProfileDto::class))]
+                content = [Content(schema = Schema(implementation = GetProfileDto::class))],
             ),
             ApiResponse(
                 responseCode = "404",
                 description = "사용자를 찾을 수 없음",
-                content = [Content(schema = Schema(hidden = true))]
+                content = [Content(schema = Schema(hidden = true))],
             ),
             ApiResponse(
                 responseCode = "409",
                 description = "이미 사용 중인 닉네임",
-                content = [Content(schema = Schema(hidden = true))]
-            )
-        ]
+                content = [Content(schema = Schema(hidden = true))],
+            ),
+        ],
     )
     @PatchMapping("", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun updateProfile(
@@ -69,14 +70,14 @@ class UserController(
             ApiResponse(
                 responseCode = "200",
                 description = "조회 성공",
-                content = [Content(schema = Schema(implementation = GetProfileDto::class))]
+                content = [Content(schema = Schema(implementation = GetProfileDto::class))],
             ),
             ApiResponse(
                 responseCode = "404",
                 description = "사용자를 찾을 수 없음",
-                content = [Content(schema = Schema(hidden = true))]
-            )
-        ]
+                content = [Content(schema = Schema(hidden = true))],
+            ),
+        ],
     )
     @GetMapping("")
     fun getProfile(
@@ -88,25 +89,25 @@ class UserController(
 
     @Operation(
         summary = "프로필 이미지만 수정",
-        description = "다른 정보는 유지하고 프로필 이미지만 별도로 수정합니다."
+        description = "다른 정보는 유지하고 프로필 이미지만 별도로 수정합니다.",
     )
     @ApiResponses(
         value = [
             ApiResponse(
                 responseCode = "200",
                 description = "이미지 수정 성공",
-                content = [Content(schema = Schema(implementation = GetProfileDto::class))]
+                content = [Content(schema = Schema(implementation = GetProfileDto::class))],
             ),
             ApiResponse(
                 responseCode = "404",
                 description = "사용자를 찾을 수 없음",
-                content = [Content(schema = Schema(hidden = true))]
-            )
-        ]
+                content = [Content(schema = Schema(hidden = true))],
+            ),
+        ],
     )
     @PutMapping(
         "/profile-image",
-        consumes = [MediaType.MULTIPART_FORM_DATA_VALUE]
+        consumes = [MediaType.MULTIPART_FORM_DATA_VALUE],
     )
     fun updateProfileImage(
         @Parameter(description = "업로드할 이미지 파일")

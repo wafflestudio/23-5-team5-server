@@ -29,14 +29,14 @@ class AuthController(
             ApiResponse(
                 responseCode = "200",
                 description = "회원가입 성공",
-                content = [Content(schema = Schema(implementation = SignUpResponseDto::class))]
+                content = [Content(schema = Schema(implementation = SignUpResponseDto::class))],
             ),
             ApiResponse(
                 responseCode = "409",
                 description = "회원가입 실패 (닉네임 중복, 학번 중복, 또는 이미 존재하는 아이디)",
-                content = [Content(schema = Schema(hidden = true))]
-            )
-        ]
+                content = [Content(schema = Schema(hidden = true))],
+            ),
+        ],
     )
     @PostMapping("/signup")
     fun signUp(
@@ -52,14 +52,14 @@ class AuthController(
             ApiResponse(
                 responseCode = "200",
                 description = "로그인 성공",
-                content = [Content(schema = Schema(implementation = LoginResponseDto::class))]
+                content = [Content(schema = Schema(implementation = LoginResponseDto::class))],
             ),
             ApiResponse(
                 responseCode = "401",
                 description = "로그인 실패 (아이디 또는 비밀번호 불일치)",
-                content = [Content(schema = Schema(hidden = true))]
-            )
-        ]
+                content = [Content(schema = Schema(hidden = true))],
+            ),
+        ],
     )
     @PostMapping("/login")
     fun login(

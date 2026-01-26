@@ -10,7 +10,7 @@ data class OAuthSignUpRequest(
     @Schema(
         description = "서울대 이메일 (소셜 계정이 snu메일이 아닐 경우에만 입력, snu메일일 경우 null 전송)",
         example = "myid@snu.ac.kr",
-        nullable = true
+        nullable = true,
     )
     val email: String? = null,
     val major: String,

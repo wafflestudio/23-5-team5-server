@@ -1,10 +1,10 @@
 package com.team5.studygroup.oauth.service
 
 import com.team5.studygroup.jwt.JwtTokenProvider
+import com.team5.studygroup.oauth.OAuthException.InvalidEmailDomain
 import com.team5.studygroup.oauth.OAuthException.InvalidRegisterToken
 import com.team5.studygroup.oauth.OAuthException.InvalidTokenSubject
 import com.team5.studygroup.oauth.OAuthException.ProviderMismatch
-import com.team5.studygroup.oauth.OAuthException.InvalidEmailDomain
 import com.team5.studygroup.oauth.client.SocialClientComposite
 import com.team5.studygroup.oauth.dto.OAuthLoginResponse
 import com.team5.studygroup.oauth.dto.OAuthSignUpRequest
@@ -59,12 +59,12 @@ class OAuthService(
         provider: ProviderType,
         request: OAuthSignUpRequest,
     ): OAuthSignUpResponse {
-
-        val claims = try {
-            jwtTokenProvider.getRegisterClaims(request.registerToken)
-        } catch (e: Exception) {
-            throw InvalidRegisterToken()
-        }
+        val claims =
+            try {
+                jwtTokenProvider.getRegisterClaims(request.registerToken)
+            } catch (e: Exception) {
+                throw InvalidRegisterToken()
+            }
 
         val tokenProvider = claims["provider"] as String
         val tokenProviderId = claims["providerId"] as String
@@ -85,24 +85,26 @@ class OAuthService(
             throw InvalidEmailDomain()
         }
 
-        val newUser = User(
-            username = finalEmail,
-            password = null,
-            major = request.major,
-            studentNumber = request.studentNumber,
-            nickname = request.nickname,
-            isVerified = true,
-            profileImageUrl = null,
-            userRole = Role.USER,
-            bio = null,
-        )
+        val newUser =
+            User(
+                username = finalEmail,
+                password = null,
+                major = request.major,
+                studentNumber = request.studentNumber,
+                nickname = request.nickname,
+                isVerified = true,
+                profileImageUrl = null,
+                userRole = Role.USER,
+                bio = null,
+            )
         val savedUser = userRepository.save(newUser)
 
-        val newSocialAuth = SocialAuth(
-            user = savedUser,
-            provider = provider,
-            providerId = tokenProviderId,
-        )
+        val newSocialAuth =
+            SocialAuth(
+                user = savedUser,
+                provider = provider,
+                providerId = tokenProviderId,
+            )
         socialAuthRepository.save(newSocialAuth)
 
         val accessToken = jwtTokenProvider.createAccessToken(savedUser.username)
@@ -111,7 +113,7 @@ class OAuthService(
             accessToken = accessToken,
             username = savedUser.username,
             nickname = savedUser.nickname,
-            isVerified = savedUser.isVerified
+            isVerified = savedUser.isVerified,
         )
     }
 }

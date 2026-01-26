@@ -1,6 +1,5 @@
 package com.team5.studygroup.verification.dto
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.v3.oas.annotations.media.Schema
 
 data class VerifyRequest(
