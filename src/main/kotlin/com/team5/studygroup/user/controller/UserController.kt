@@ -52,13 +52,11 @@ class UserController(
     }
 
     // 프로필 이미지 다운로드
-    // 서비스에서 별도의 함수를 맏드는 대신, 기존의 getProfile 사용
     @GetMapping("/profile-image")
     fun getProfileImage(
         @Parameter(hidden = true) @LoggedInUser userId: Long,
     ): ResponseEntity<Void> {
-        val userProfile = profileService.getProfile(userId)
-        val profileImageUrl = userProfile.profileImageUrl
+        val profileImageUrl = profileService.getProfileImageUrl(userId)
         return if (profileImageUrl != null) {
             ResponseEntity.status(HttpStatus.FOUND)
                 .location(URI.create(profileImageUrl))
