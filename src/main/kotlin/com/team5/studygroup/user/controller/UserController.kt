@@ -3,6 +3,7 @@ package com.team5.studygroup.user.controller
 import com.team5.studygroup.user.LoggedInUser
 import com.team5.studygroup.user.dto.GetProfileDto
 import com.team5.studygroup.user.dto.UpdateProfileDto
+import com.team5.studygroup.user.dto.UpdateProfileImageResponseDto
 import com.team5.studygroup.user.service.ProfileService
 import io.swagger.v3.oas.annotations.Parameter
 import org.springframework.http.HttpStatus
@@ -46,7 +47,7 @@ class UserController(
     fun updateProfileImage(
         @RequestParam("profile_image") profileImage: MultipartFile,
         @Parameter(hidden = true) @LoggedInUser userId: Long,
-    ): ResponseEntity<GetProfileDto> {
+    ): ResponseEntity<UpdateProfileImageResponseDto> {
         val response = profileService.updateProfileImage(userId, profileImage)
         return ResponseEntity.ok(response)
     }

@@ -70,7 +70,6 @@ class ProfileService(
     fun updateProfileImage(
         userId: Long,
         profileImage: MultipartFile,
-        GetProfileImageResponseDto: GetProfileDto,
     ): UpdateProfileImageResponseDto {
         val user =
             userRepository.findById(userId)
