@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.MediaType
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
+import java.net.URI
 
 @Tag(name = "User API", description = "마이페이지 및 프로필 관리 API")
 @RestController
@@ -116,5 +118,20 @@ class UserController(
     ): ResponseEntity<GetProfileDto> {
         val response = profileService.updateProfileImage(userId, profileImage)
         return ResponseEntity.ok(response)
+    }
+
+    // 프로필 이미지 다운로드
+    @GetMapping("/profile-image")
+    fun getProfileImage(
+        @Parameter(hidden = true) @LoggedInUser userId: Long,
+    ): ResponseEntity<Void> {
+        val profileImageUrl = profileService.getProfileImageUrl(userId)
+        return if (profileImageUrl != null) {
+            ResponseEntity.status(HttpStatus.FOUND)
+                .location(URI.create(profileImageUrl))
+                .build()
+        } else {
+            ResponseEntity.notFound().build()
+        }
     }
 }

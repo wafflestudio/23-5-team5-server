@@ -85,4 +85,12 @@ class ProfileService(
 
         return GetProfileDto.fromEntity(user)
     }
+
+    @Transactional(readOnly = true)
+    fun getProfileImageUrl(userId: Long): String? {
+        val user =
+            userRepository.findById(userId)
+                .orElseThrow { UserNotFoundException() }
+        return user.profileImageUrl
+    }
 }
