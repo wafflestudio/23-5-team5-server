@@ -1,6 +1,11 @@
 package com.team5.studygroup.user.service
 
 import com.team5.studygroup.jwt.JwtTokenProvider
+import com.team5.studygroup.user.LoginFailedException
+import com.team5.studygroup.user.NicknameDuplicateException
+import com.team5.studygroup.user.StudentNumberDuplicateException
+import com.team5.studygroup.user.UserException
+import com.team5.studygroup.user.UsernameDuplicateException
 import com.team5.studygroup.user.dto.LoginDto
 import com.team5.studygroup.user.dto.LoginResponseDto
 import com.team5.studygroup.user.dto.SignUpDto
@@ -17,58 +22,74 @@ import org.springframework.transaction.annotation.Transactional
 class UserService(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
-//    private val authenticationManagerBuilder: AuthenticationManagerBuilder,
     private val jwtTokenProvider: JwtTokenProvider,
 ) {
     @Transactional
     fun signUp(signUpDto: SignUpDto): SignUpResponseDto {
-        // 1. 중복 체크 (아이디뿐만 아니라 닉네임도 체크하는 것이 안전합니다)
-        if (userRepository.findByUsername(signUpDto.username) != null) {
-            throw Exception("이미 등록된 아이디입니다.")
-        }
-        if (userRepository.existsByNickname(signUpDto.nickname)) {
-            throw Exception("이미 등록된 닉네임입니다.")
-        }
-        if (userRepository.existsByStudentNumber(signUpDto.studentNumber)) {
-            throw Exception("이미 등록된 학번입니다.")
-        }
 
-        // 2. 유저 객체 생성
-        // DTO에 major, studentNumber 등이 포함되어 있다고 가정하고 매핑합니다.
-        val member =
+        val existingUser = userRepository.findByUsername(signUpDto.username)
+
+        val userToSave = if (existingUser != null) {
+
+            if (existingUser.password == null) {
+
+                if (userRepository.existsByNickname(signUpDto.nickname)) {
+                    throw NicknameDuplicateException()
+                }
+                if (userRepository.existsByStudentNumber(signUpDto.studentNumber)) {
+                    throw StudentNumberDuplicateException()
+                }
+
+                existingUser.apply {
+                    this.password = passwordEncoder.encode(signUpDto.password)
+                    this.major = signUpDto.major
+                    this.studentNumber = signUpDto.studentNumber
+                    this.nickname = signUpDto.nickname
+                }
+            } else {
+                throw UsernameDuplicateException()
+            }
+        } else {
+
+            if (userRepository.existsByNickname(signUpDto.nickname)) {
+                throw NicknameDuplicateException()
+            }
+            if (userRepository.existsByStudentNumber(signUpDto.studentNumber)) {
+                throw StudentNumberDuplicateException()
+            }
+
             User(
                 username = signUpDto.username,
                 password = passwordEncoder.encode(signUpDto.password),
-                // TODO: BCryptPasswordEncoder로 암호화 필요!
                 major = signUpDto.major,
                 studentNumber = signUpDto.studentNumber,
                 nickname = signUpDto.nickname,
-                // 닉네임 없으면 아이디로
                 isVerified = true,
                 profileImageUrl = null,
                 userRole = Role.USER,
                 bio = null,
             )
-        userRepository.save(member)
-        val accessToken = jwtTokenProvider.createAccessToken(member.username)
+        }
+
+        val savedUser = userRepository.save(userToSave)
+
+        val accessToken = jwtTokenProvider.createAccessToken(savedUser.username)
+
         return SignUpResponseDto(
             accessToken = accessToken,
-            username = member.username,
-            nickname = member.nickname,
-            isVerified = member.isVerified,
+            username = savedUser.username,
+            nickname = savedUser.nickname,
+            isVerified = savedUser.isVerified,
         )
     }
 
     fun login(loginDto: LoginDto): LoginResponseDto {
-        // "일단 JWT 안 쓸 거야"라고 하셨으므로,
-        // 만약 JWT 설정이 미비하다면 이 부분에서 에러가 날 수 있습니다.
-        // API 설정만 확인하시려면 이 메서드는 잠시 비워두거나 더미 토큰을 반환하게 해도 됩니다.
         val member =
             userRepository.findByUsername(loginDto.username)
-                ?: throw IllegalArgumentException("아이디 또는 비밀번호가 잘못되었습니다.")
+                ?: throw LoginFailedException()
 
-        if (!passwordEncoder.matches(loginDto.password, member.password)) {
-            throw IllegalArgumentException("아이디 또는 비밀번호가 잘못되었습니다.")
+        if (member.password == null || !passwordEncoder.matches(loginDto.password, member.password)) {
+            throw LoginFailedException()
         }
 
         val accessToken = jwtTokenProvider.createAccessToken(member.username)
@@ -79,9 +100,5 @@ class UserService(
             isVerified = member.isVerified,
         )
 
-//        val authenticationToken = UsernamePasswordAuthenticationToken(loginDto.account, loginDto.password)
-//        val authentication = authenticationManagerBuilder.`object`.authenticate(authenticationToken)
-//
-//        return jwtTokenProvider.createToken(authentication)
     }
 }

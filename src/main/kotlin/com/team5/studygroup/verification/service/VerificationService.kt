@@ -7,9 +7,15 @@ import com.team5.studygroup.user.model.ProviderType
 import com.team5.studygroup.user.model.SocialAuth
 import com.team5.studygroup.user.repository.SocialAuthRepository
 import com.team5.studygroup.user.repository.UserRepository
+import com.team5.studygroup.verification.EmailSendFailedException
+import com.team5.studygroup.verification.InvalidEmailDomainException
+import com.team5.studygroup.verification.VerificationCodeExpiredException
+import com.team5.studygroup.verification.VerificationCodeMismatchException
+import com.team5.studygroup.verification.dto.SocialVerifyRequest
 import com.team5.studygroup.verification.dto.VerifyRequest
 import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSender
+import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.Random
@@ -22,9 +28,10 @@ class VerificationService(
     private val socialAuthRepository: SocialAuthRepository,
     private val jwtTokenProvider: JwtTokenProvider,
 ) {
+    @Async
     fun sendCode(email: String) {
         if (!email.endsWith("snu.ac.kr")) {
-            throw IllegalArgumentException("서울대학교 이메일(@snu.ac.kr)만 사용할 수 있습니다.")
+            throw InvalidEmailDomainException()
         }
 
         val code = createRandomCode()
@@ -39,20 +46,33 @@ class VerificationService(
             javaMailSender.send(message)
         } catch (e: Exception) {
             redisService.deleteData(email)
-            throw RuntimeException("메일 발송에 실패했습니다. 이메일 주소를 확인해주세요.")
+            throw EmailSendFailedException()
         }
     }
 
     @Transactional
-    fun verifyAndProcess(request: VerifyRequest): OAuthLoginResponse {
+    fun verify(request: VerifyRequest): String {
+        val storedCode = redisService.getData(request.email)
+        if (storedCode == null) {
+            throw VerificationCodeExpiredException()
+        }
+        if (storedCode != request.code) {
+            throw VerificationCodeMismatchException()
+        }
+        redisService.deleteData(request.email)
+        return "인증에 성공하였습니다."
+    }
+
+    @Transactional
+    fun verifyAndProcess(request: SocialVerifyRequest): OAuthLoginResponse {
         val (registerToken, inputEmail, code) = request
 
         val storedCode = redisService.getData(inputEmail)
         if (storedCode == null) {
-            throw IllegalArgumentException("인증번호가 만료되었거나 발송되지 않았습니다.")
+            throw VerificationCodeExpiredException()
         }
         if (storedCode != code) {
-            throw IllegalArgumentException("인증번호가 일치하지 않습니다.")
+            throw VerificationCodeMismatchException()
         }
 
         val claims = jwtTokenProvider.getRegisterClaims(registerToken)
