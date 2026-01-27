@@ -12,6 +12,8 @@ interface GroupRepository : JpaRepository<Group, Long> {
 
     fun findByCategoryId(categoryId: Long): List<Group>
 
+    fun findBySubCategoryId(subCategoryId: Long): List<Group>
+
     fun findByGroupNameContainingOrDescriptionContaining(
         groupName: String,
         description: String,
@@ -27,6 +29,19 @@ interface GroupRepository : JpaRepository<Group, Long> {
     )
     fun findByCategoryIdAndKeyword(
         @Param("categoryId") categoryId: Long,
+        @Param("keyword") keyword: String,
+    ): List<Group>
+
+    // 서브카테고리 + 키워드 검색
+    @Query(
+        """
+    SELECT g FROM Group g 
+    WHERE g.subCategoryId = :subCategoryId 
+    AND (g.groupName LIKE %:keyword% OR g.description LIKE %:keyword%)
+""",
+    )
+    fun findBySubCategoryIdAndKeyword(
+        @Param("subCategoryId") subCategoryId: Long,
         @Param("keyword") keyword: String,
     ): List<Group>
 }
