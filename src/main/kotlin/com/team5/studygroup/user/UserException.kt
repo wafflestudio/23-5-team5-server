@@ -29,3 +29,15 @@ class StudentNumberDuplicateException : UserException(
     httpStatusCode = HttpStatus.CONFLICT,
     msg = "이미 등록된 학번입니다.",
 )
+
+class UsernameDuplicateException : UserException(
+    errorCode = 1004,
+    httpStatusCode = HttpStatus.CONFLICT,
+    msg = "이미 등록된 아이디입니다.",
+)
+
+class LoginFailedException : UserException(
+    errorCode = 1005,
+    httpStatusCode = HttpStatus.UNAUTHORIZED,
+    msg = "아이디 또는 비밀번호가 잘못되었습니다.",
+)
