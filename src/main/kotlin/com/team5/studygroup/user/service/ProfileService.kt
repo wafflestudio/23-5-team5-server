@@ -5,6 +5,7 @@ import com.team5.studygroup.user.NicknameDuplicateException
 import com.team5.studygroup.user.UserNotFoundException
 import com.team5.studygroup.user.dto.GetProfileDto
 import com.team5.studygroup.user.dto.UpdateProfileDto
+import com.team5.studygroup.user.dto.UpdateProfileImageResponseDto
 import com.team5.studygroup.user.repository.UserRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -69,7 +70,7 @@ class ProfileService(
     fun updateProfileImage(
         userId: Long,
         profileImage: MultipartFile,
-    ): GetProfileDto {
+    ): UpdateProfileImageResponseDto {
         val user =
             userRepository.findById(userId)
                 .orElseThrow { UserNotFoundException() }
@@ -83,7 +84,11 @@ class ProfileService(
 
         user.updateProfile(profileImageUrl = newProfileImageUrl)
 
-        return GetProfileDto.fromEntity(user)
+        // 이미지가 업로드된 시점이므로 user가 업데이트된 시점을 사용
+        return UpdateProfileImageResponseDto(
+            profileImageUrl = user.profileImageUrl,
+            createdAt = user.updatedAt,
+        )
     }
 
     @Transactional(readOnly = true)
