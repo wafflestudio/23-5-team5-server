@@ -17,5 +17,9 @@ spring:
     serialization:
       write-dates-as-timestamps: false
 
+jwt:
+  secret: ${JWT_SECRET:your_default_dev_secret_key_more_than_32_characters}
+  expiration-time: 604800000
+
 server:
   forward-headers-strategy: native
