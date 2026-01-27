@@ -18,9 +18,10 @@ class SearchController(
     @GetMapping("")
     fun search(
         @RequestParam(required = false) categoryId: Long?,
+        @RequestParam(required = false) subCategoryId: Long?,
         @RequestParam(required = false) keyword: String?,
     ): ResponseEntity<List<GroupResponse>> {
-        val result = searchService.search(categoryId, keyword)
+        val result = searchService.search(categoryId, subCategoryId, keyword)
         return ResponseEntity.ok(result)
     }
 
