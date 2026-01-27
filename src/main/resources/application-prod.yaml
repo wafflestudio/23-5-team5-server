@@ -44,10 +44,6 @@ spring:
               - profile
               - email
 
-jwt:
-  secret: ${JWT_SECRET}
-  expiration-time: 86400000
-
 springdoc:
   api-docs:
     enabled: true
