@@ -49,7 +49,10 @@ class SearchService(
     }
 
     // 내가 작성한 공고
-    fun searchMyGroup(userId: Long, pageable: Pageable): Page<GroupResponse> {
+    fun searchMyGroup(
+        userId: Long,
+        pageable: Pageable,
+    ): Page<GroupResponse> {
         val groups = groupRepository.findByLeaderId(userId, pageable)
         return groups.map { GroupResponse.from(it) }
     }

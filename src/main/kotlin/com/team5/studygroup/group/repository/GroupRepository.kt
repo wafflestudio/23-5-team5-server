@@ -10,11 +10,20 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface GroupRepository : JpaRepository<Group, Long> {
-    fun findByLeaderId(leaderId: Long, pageable: Pageable): Page<Group>
+    fun findByLeaderId(
+        leaderId: Long,
+        pageable: Pageable,
+    ): Page<Group>
 
-    fun findByCategoryId(categoryId: Long, pageable: Pageable): Page<Group>
+    fun findByCategoryId(
+        categoryId: Long,
+        pageable: Pageable,
+    ): Page<Group>
 
-    fun findBySubCategoryId(subCategoryId: Long, pageable: Pageable): Page<Group>
+    fun findBySubCategoryId(
+        subCategoryId: Long,
+        pageable: Pageable,
+    ): Page<Group>
 
     fun findByGroupNameContainingOrDescriptionContaining(
         groupName: String,
