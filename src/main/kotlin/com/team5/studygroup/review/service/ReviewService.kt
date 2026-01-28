@@ -4,6 +4,9 @@ import com.team5.studygroup.review.dto.CreateReviewDto
 import com.team5.studygroup.review.dto.DeleteReviewDto
 import com.team5.studygroup.review.dto.ReviewResponse
 import com.team5.studygroup.review.dto.UpdateReviewDto
+import com.team5.studygroup.review.exception.ReviewDeleteForbiddenException
+import com.team5.studygroup.review.exception.ReviewNotFoundException
+import com.team5.studygroup.review.exception.ReviewUpdateForbiddenException
 import com.team5.studygroup.review.model.Review
 import com.team5.studygroup.review.repository.ReviewRepository
 
@@ -28,6 +31,13 @@ class ReviewService(
         deleteReviewDto: DeleteReviewDto,
         userId: Long,
     ) {
+        val review =
+            reviewRepository.findById(deleteReviewDto.reviewId).orElseThrow {
+                ReviewNotFoundException()
+            }
+        if (review.reviewerId != userId) {
+            throw ReviewDeleteForbiddenException()
+        }
         reviewRepository.deleteById(deleteReviewDto.reviewId)
     }
 
@@ -35,7 +45,14 @@ class ReviewService(
         updateReviewDto: UpdateReviewDto,
         userId: Long,
     ): Review {
-        val review = reviewRepository.findById(updateReviewDto.reviewId).orElseThrow()
+        val review =
+            reviewRepository.findById(updateReviewDto.reviewId).orElseThrow {
+                ReviewNotFoundException()
+            }
+        if (review.reviewerId != userId) {
+            throw ReviewUpdateForbiddenException()
+        }
+
         review.updateReview(updateReviewDto.description)
         return reviewRepository.save(review)
     }
