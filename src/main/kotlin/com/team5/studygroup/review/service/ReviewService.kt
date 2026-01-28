@@ -9,7 +9,9 @@ import com.team5.studygroup.review.exception.ReviewNotFoundException
 import com.team5.studygroup.review.exception.ReviewUpdateForbiddenException
 import com.team5.studygroup.review.model.Review
 import com.team5.studygroup.review.repository.ReviewRepository
+import org.springframework.stereotype.Service
 
+@Service
 class ReviewService(
     private val reviewRepository: ReviewRepository,
 ) {
