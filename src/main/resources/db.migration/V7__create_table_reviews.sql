@@ -4,6 +4,8 @@ CREATE TABLE IF NOT EXISTS reviews (
     reviewer_id BIGINT NOT NULL,
     reviewee_id BIGINT NOT NULL,
     description TEXT,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP,
 
     FOREIGN KEY (group_id) REFERENCES study_groups(id),
     FOREIGN KEY (reviewer_id) REFERENCES users(id),
