@@ -22,30 +22,24 @@ class Review(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
     val groupId: Long,
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reviewer_id")
     val reviewerId: Long,
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reviewee_id")
     val revieweeId: Long,
-
     @Column(columnDefinition = "TEXT")
     var description: String?,
-
     @CreatedDate
     @Column(updatable = false)
     var createdAt: Instant? = null,
-
     @LastModifiedDate
     var updatedAt: Instant? = null,
 ) {
-    fun UpdateReview(description: String) {
+    fun updateReview(description: String) {
         this.description = description
     }
 }
