@@ -2,6 +2,8 @@ package com.team5.studygroup.group.service
 
 import GroupResponse
 import com.team5.studygroup.group.repository.GroupRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
@@ -13,41 +15,45 @@ class SearchService(
         categoryId: Long?,
         subCategoryId: Long?,
         keyword: String?,
-    ): List<GroupResponse> {
+        pageable: Pageable,
+    ): Page<GroupResponse> {
         val groups =
             when {
                 // 서브카테고리 + 키워드
                 subCategoryId != null && keyword != null -> {
-                    groupRepository.findBySubCategoryIdAndKeyword(subCategoryId, keyword)
+                    groupRepository.findBySubCategoryIdAndKeyword(subCategoryId, keyword, pageable)
                 }
                 // 서브카테고리만
                 subCategoryId != null -> {
-                    groupRepository.findBySubCategoryId(subCategoryId)
+                    groupRepository.findBySubCategoryId(subCategoryId, pageable)
                 }
                 // 카테고리 + 키워드
                 categoryId != null && keyword != null -> {
-                    groupRepository.findByCategoryIdAndKeyword(categoryId, keyword)
+                    groupRepository.findByCategoryIdAndKeyword(categoryId, keyword, pageable)
                 }
                 // 카테고리만
                 categoryId != null -> {
-                    groupRepository.findByCategoryId(categoryId)
+                    groupRepository.findByCategoryId(categoryId, pageable)
                 }
                 // 키워드만
                 // 키워드 검색은 카테고리나 서브카테고리는 검색하지 않음
                 keyword != null -> {
-                    groupRepository.findByGroupNameContainingOrDescriptionContaining(keyword, keyword)
+                    groupRepository.findByGroupNameContainingOrDescriptionContaining(keyword, keyword, pageable)
                 }
                 // 전체
                 else -> {
-                    groupRepository.findAll()
+                    groupRepository.findAll(pageable)
                 }
             }
         return groups.map { GroupResponse.from(it) }
     }
 
     // 내가 작성한 공고
-    fun searchMyGroup(userId: Long): List<GroupResponse> {
-        val groups = groupRepository.findByLeaderId(userId)
+    fun searchMyGroup(
+        userId: Long,
+        pageable: Pageable,
+    ): Page<GroupResponse> {
+        val groups = groupRepository.findByLeaderId(userId, pageable)
         return groups.map { GroupResponse.from(it) }
     }
 }
