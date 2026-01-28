@@ -1,6 +1,8 @@
 package com.team5.studygroup.group.repository
 
 import com.team5.studygroup.group.model.Group
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
@@ -8,16 +10,17 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface GroupRepository : JpaRepository<Group, Long> {
-    fun findByLeaderId(leaderId: Long): List<Group>
+    fun findByLeaderId(leaderId: Long, pageable: Pageable): Page<Group>
 
-    fun findByCategoryId(categoryId: Long): List<Group>
+    fun findByCategoryId(categoryId: Long, pageable: Pageable): Page<Group>
 
-    fun findBySubCategoryId(subCategoryId: Long): List<Group>
+    fun findBySubCategoryId(subCategoryId: Long, pageable: Pageable): Page<Group>
 
     fun findByGroupNameContainingOrDescriptionContaining(
         groupName: String,
         description: String,
-    ): List<Group>
+        pageable: Pageable,
+    ): Page<Group>
 
     // 카테고리 + 키워드 동시 검색
     @Query(
@@ -30,7 +33,8 @@ interface GroupRepository : JpaRepository<Group, Long> {
     fun findByCategoryIdAndKeyword(
         @Param("categoryId") categoryId: Long,
         @Param("keyword") keyword: String,
-    ): List<Group>
+        pageable: Pageable,
+    ): Page<Group>
 
     // 서브카테고리 + 키워드 검색
     @Query(
@@ -43,5 +47,6 @@ interface GroupRepository : JpaRepository<Group, Long> {
     fun findBySubCategoryIdAndKeyword(
         @Param("subCategoryId") subCategoryId: Long,
         @Param("keyword") keyword: String,
-    ): List<Group>
+        pageable: Pageable,
+    ): Page<Group>
 }
