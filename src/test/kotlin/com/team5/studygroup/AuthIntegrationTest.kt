@@ -30,7 +30,7 @@ class AuthIntegrationTest
         fun `should register successfully`() {
             val request =
                 SignUpDto(
-                    username = "user1234",
+                    username = "user1234@snu.ac.kr",
                     password = "password1234",
                     major = "computer science",
                     studentNumber = "2024-12345",
@@ -48,7 +48,7 @@ class AuthIntegrationTest
         fun `should return 409 error when username duplicated`() {
             val existingRequest =
                 SignUpDto(
-                    username = "duplicateUser",
+                    username = "duplicateUser@snu.ac.kr",
                     password = "password1",
                     major = "math",
                     studentNumber = "2023-00001",
@@ -62,7 +62,7 @@ class AuthIntegrationTest
 
             val newRequest =
                 SignUpDto(
-                    username = "duplicateUser",
+                    username = "duplicateUser@snu.ac.kr",
                     password = "password2",
                     major = "science",
                     studentNumber = "2023-00002",
@@ -80,7 +80,7 @@ class AuthIntegrationTest
         fun `should return 409 error when student number duplicated`() {
             val existingRequest =
                 SignUpDto(
-                    username = "uniqueUser1",
+                    username = "uniqueUser1@snu.ac.kr",
                     password = "password1",
                     major = "math",
                     studentNumber = "2023-99999",
@@ -94,7 +94,7 @@ class AuthIntegrationTest
 
             val newRequest =
                 SignUpDto(
-                    username = "uniqueUser2",
+                    username = "uniqueUser2@snu.ac.kr",
                     password = "password2",
                     major = "art",
                     studentNumber = "2023-99999",
@@ -112,7 +112,7 @@ class AuthIntegrationTest
         fun `should return 409 error when nickname duplicated`() {
             val existingRequest =
                 SignUpDto(
-                    username = "uniqueUser3",
+                    username = "uniqueUser3@snu.ac.kr",
                     password = "password1",
                     major = "math",
                     studentNumber = "2023-11111",
@@ -126,7 +126,7 @@ class AuthIntegrationTest
 
             val newRequest =
                 SignUpDto(
-                    username = "uniqueUser4",
+                    username = "uniqueUser4@snu.ac.kr",
                     password = "password2",
                     major = "history",
                     studentNumber = "2023-22222",
