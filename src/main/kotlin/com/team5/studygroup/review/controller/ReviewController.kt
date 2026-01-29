@@ -7,6 +7,9 @@ import com.team5.studygroup.review.dto.UpdateReviewDto
 import com.team5.studygroup.review.model.Review
 import com.team5.studygroup.review.service.ReviewService
 import com.team5.studygroup.user.LoggedInUser
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PageableDefault
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -51,8 +54,9 @@ class ReviewController(
         @RequestParam("groupId", required = false) groupId: Long?,
         @RequestParam("reviewerId", required = false) reviewerId: Long?,
         @RequestParam("revieweeId", required = false) revieweeId: Long?,
-    ): ResponseEntity<List<ReviewResponse>> {
-        val result = reviewService.search(groupId, reviewerId, revieweeId)
+        @PageableDefault(size = 10, sort = ["createdAt"]) pageable: Pageable,
+    ): ResponseEntity<Page<ReviewResponse>> {
+        val result = reviewService.search(groupId, reviewerId, revieweeId, pageable)
         return ResponseEntity.ok(result)
     }
 }
