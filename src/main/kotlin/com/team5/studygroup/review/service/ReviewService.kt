@@ -9,6 +9,8 @@ import com.team5.studygroup.review.exception.ReviewNotFoundException
 import com.team5.studygroup.review.exception.ReviewUpdateForbiddenException
 import com.team5.studygroup.review.model.Review
 import com.team5.studygroup.review.repository.ReviewRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
@@ -63,16 +65,17 @@ class ReviewService(
         groupId: Long?,
         reviewerId: Long?,
         revieweeId: Long?,
-    ): List<ReviewResponse> {
+        pageable: Pageable,
+    ): Page<ReviewResponse> {
         if (groupId != null) {
-            return reviewRepository.findByGroupId(groupId).map { ReviewResponse.from(it) }
+            return reviewRepository.findByGroupId(groupId, pageable).map { ReviewResponse.from(it) }
         }
         if (reviewerId != null) {
-            return reviewRepository.findByReviewerId(reviewerId).map { ReviewResponse.from(it) }
+            return reviewRepository.findByReviewerId(reviewerId, pageable).map { ReviewResponse.from(it) }
         }
         if (revieweeId != null) {
-            return reviewRepository.findByRevieweeId(revieweeId).map { ReviewResponse.from(it) }
+            return reviewRepository.findByRevieweeId(revieweeId, pageable).map { ReviewResponse.from(it) }
         }
-        return listOf()
+        return Page.empty()
     }
 }
