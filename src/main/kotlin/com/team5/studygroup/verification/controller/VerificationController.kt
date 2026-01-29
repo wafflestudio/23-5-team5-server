@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-@Tag(name = "Verification API", description = "이메일 인증 및 소셜 추가 인증 관련 API")
+@Tag(name = "Verification API", description = "학교 이메일 인증 및 소셜 추가 인증 관련 API")
 @RestController
 @RequestMapping("/auth")
 class VerificationController(
