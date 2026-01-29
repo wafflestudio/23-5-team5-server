@@ -43,38 +43,46 @@ class VerificationController(
             ApiResponse(
                 responseCode = "400",
                 description = "도메인 오류",
-                content = [Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = Schema(implementation = ErrorResponse::class),
-                    examples = [ExampleObject(
-                        name = "잘못된 도메인",
-                        value = """
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "잘못된 도메인",
+                                value = """
                             {
                               "errorCode": 2001,
                               "message": "서울대학교 이메일(@snu.ac.kr)만 사용할 수 있습니다.",
                               "timestamp": "2026-01-30T05:00:00"
                             }
-                        """
-                    )]
-                )]
+                        """,
+                            ),
+                        ],
+                    ),
+                ],
             ),
             ApiResponse(
                 responseCode = "500",
                 description = "메일 서버 오류",
-                content = [Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = Schema(implementation = ErrorResponse::class),
-                    examples = [ExampleObject(
-                        name = "발송 실패",
-                        value = """
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "발송 실패",
+                                value = """
                             {
                               "errorCode": 2002,
                               "message": "메일 발송에 실패했습니다. 이메일 주소를 확인해주세요.",
                               "timestamp": "2026-01-30T05:00:00"
                             }
-                        """
-                    )]
-                )]
+                        """,
+                            ),
+                        ],
+                    ),
+                ],
             ),
         ],
     )
@@ -105,32 +113,34 @@ class VerificationController(
             ApiResponse(
                 responseCode = "400",
                 description = "검증 실패",
-                content = [Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = Schema(implementation = ErrorResponse::class),
-                    examples = [
-                        ExampleObject(
-                            name = "번호 만료 또는 미발급",
-                            value = """
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "번호 만료 또는 미발급",
+                                value = """
                             {
                               "errorCode": 2003,
                               "message": "인증번호가 만료되었거나 발송되지 않았습니다.",
                               "timestamp": "2026-01-30T05:00:00"
                             }
-                        """
-                        ),
-                        ExampleObject(
-                            name = "번호 불일치",
-                            value = """
+                        """,
+                            ),
+                            ExampleObject(
+                                name = "번호 불일치",
+                                value = """
                             {
                               "errorCode": 2004,
                               "message": "인증번호가 일치하지 않습니다.",
                               "timestamp": "2026-01-30T05:00:00"
                             }
-                        """
-                        )
-                    ]
-                )]
+                        """,
+                            ),
+                        ],
+                    ),
+                ],
             ),
         ],
     )
@@ -164,32 +174,34 @@ class VerificationController(
             ApiResponse(
                 responseCode = "400",
                 description = "검증 실패",
-                content = [Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = Schema(implementation = ErrorResponse::class),
-                    examples = [
-                        ExampleObject(
-                            name = "번호 만료 또는 미발급",
-                            value = """
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "번호 만료 또는 미발급",
+                                value = """
                             {
                               "errorCode": 2003,
                               "message": "인증번호가 만료되었거나 발송되지 않았습니다.",
                               "timestamp": "2026-01-30T05:00:00"
                             }
-                        """
-                        ),
-                        ExampleObject(
-                            name = "번호 불일치",
-                            value = """
+                        """,
+                            ),
+                            ExampleObject(
+                                name = "번호 불일치",
+                                value = """
                             {
                               "errorCode": 2004,
                               "message": "인증번호가 일치하지 않습니다.",
                               "timestamp": "2026-01-30T05:00:00"
                             }
-                        """
-                        )
-                    ]
-                )]
+                        """,
+                            ),
+                        ],
+                    ),
+                ],
             ),
         ],
     )
