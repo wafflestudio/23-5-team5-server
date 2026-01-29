@@ -66,14 +66,20 @@ class OAuthService(
                 throw InvalidRegisterToken()
             }
 
-        val tokenProvider = claims["provider"] as String
-        val tokenProviderId = claims["providerId"] as String
-        val tokenEmail = claims["email"] as String
         val subject = claims.subject
-
         if (subject != "register") {
             throw InvalidTokenSubject()
         }
+
+        val tokenProvider =
+            claims["provider"] as? String
+                ?: throw InvalidRegisterToken()
+        val tokenProviderId =
+            claims["providerId"] as? String
+                ?: throw InvalidRegisterToken()
+        val tokenEmail =
+            claims["email"] as? String
+                ?: throw InvalidRegisterToken()
 
         if (tokenProvider != provider.name) {
             throw ProviderMismatch(provider.name, tokenProvider)

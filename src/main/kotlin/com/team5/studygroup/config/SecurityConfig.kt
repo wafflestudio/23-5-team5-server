@@ -1,5 +1,6 @@
 package com.team5.studygroup.config
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.team5.studygroup.jwt.JwtAuthenticationFilter
 import com.team5.studygroup.jwt.JwtTokenProvider
 import org.springframework.context.annotation.Bean
@@ -16,6 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 class SecurityConfig(
     private val jwtTokenProvider: JwtTokenProvider,
+    private val objectMapper: ObjectMapper,
 ) {
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
@@ -30,14 +32,13 @@ class SecurityConfig(
                     "/swagger-ui/**",
                     "/api/v3/api-docs/**",
                     "/v3/api-docs/**",
-                    "/api/auth/signup",
-                    "/api/auth/login",
-                    "/api/oauth/login/**",
+                    "/api/auth/**",
+                    "/api/oauth/**",
                 ).permitAll()
                     .anyRequest().authenticated()
             }
             .addFilterBefore(
-                JwtAuthenticationFilter(jwtTokenProvider),
+                JwtAuthenticationFilter(jwtTokenProvider, objectMapper),
                 UsernamePasswordAuthenticationFilter::class.java,
             )
         return http.build()
