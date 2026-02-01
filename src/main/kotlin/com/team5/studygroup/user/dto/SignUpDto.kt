@@ -3,7 +3,6 @@ package com.team5.studygroup.user.dto
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
-import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 
 data class SignUpDto(
@@ -11,6 +10,7 @@ data class SignUpDto(
         description = "아이디(스누메일)",
         example = "waffle@snu.ac.kr",
     )
+    @field:NotBlank(message = "아이디는 필수입니다")
     val username: String,
     @field:Schema(example = "password1234")
     @field:Size(min = 8, message = "비밀번호는 8자 이상이어야 합니다")
