@@ -1,6 +1,7 @@
 package com.team5.studygroup.common
 
 import com.team5.studygroup.DomainException
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
@@ -9,6 +10,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 
 @RestControllerAdvice // 모든 RestController의 예외를 여기서 가로챔
 class GlobalExceptionHandler {
+    private val log = LoggerFactory.getLogger(this::class.java)
+
     @ExceptionHandler(DomainException::class)
     fun handleDomainException(e: DomainException): ResponseEntity<ErrorResponse> {
         val errorResponse =
@@ -55,6 +58,7 @@ class GlobalExceptionHandler {
     // 그 외 예상치 못한 에러(500 에러 등) 처리
     @ExceptionHandler(Exception::class)
     fun handleException(e: Exception): ResponseEntity<ErrorResponse> {
+        log.error("Unexpected Error Occurred: ", e)
         val errorResponse =
             ErrorResponse(
                 errorCode = 9999,
