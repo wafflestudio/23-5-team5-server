@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 
 @Schema(description = "소셜 로그인 추가 정보 입력")
 data class OAuthSignUpRequest(
+    @JsonProperty("register_token")
     @Schema(description = "회원가입용 임시 토큰", example = "eyJhbGci...")
     val registerToken: String,
     @Schema(

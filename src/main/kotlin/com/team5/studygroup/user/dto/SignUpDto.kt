@@ -11,10 +11,6 @@ data class SignUpDto(
         description = "아이디(스누메일)",
         example = "waffle@snu.ac.kr",
     )
-    @field:Pattern(
-        regexp = "^.+@snu\\.ac\\.kr$",
-        message = "아이디는 @snu.ac.kr로 끝나야 합니다",
-    )
     val username: String,
     @field:Schema(example = "password1234")
     @field:Size(min = 8, message = "비밀번호는 8자 이상이어야 합니다")
