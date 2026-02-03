@@ -1,6 +1,9 @@
 package com.team5.studygroup.user.service
 
+import com.team5.studygroup.common.RedisService
 import com.team5.studygroup.jwt.JwtTokenProvider
+import com.team5.studygroup.user.AlreadyLoggedOutException
+import com.team5.studygroup.user.InvalidTokenFormatException
 import com.team5.studygroup.user.LoginFailedException
 import com.team5.studygroup.user.NicknameDuplicateException
 import com.team5.studygroup.user.StudentNumberDuplicateException
@@ -22,6 +25,7 @@ class UserService(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
     private val jwtTokenProvider: JwtTokenProvider,
+    private val redisService: RedisService,
 ) {
     @Transactional
     fun signUp(signUpDto: SignUpDto): SignUpResponseDto {
@@ -95,5 +99,32 @@ class UserService(
             nickname = member.nickname,
             isVerified = member.isVerified,
         )
+    }
+
+    @Transactional
+    fun logout(authHeader: String) {
+
+        // 헤더 검증: Bearer 토큰인지 확인
+        if (!authHeader.startsWith("Bearer ")) {
+            throw InvalidTokenFormatException()
+        }
+
+        // "Bearer " 제거 후 토큰 값만 추출
+        val accessToken = authHeader.substring(7)
+
+        // 이미 블랙리스트(로그아웃) 처리된 토큰인지 확인
+        if (redisService.isBlacklisted(accessToken)) {
+            throw AlreadyLoggedOutException()
+        }
+
+        // 4. 블랙리스트 등록
+        // 토큰의 남은 유효 시간(밀리초)을 계산하여 그 시간만큼만 Redis에 저장
+        val expiration: Long = jwtTokenProvider.getExpiration(accessToken)
+        val now: Long = System.currentTimeMillis()
+        val remainingTime = expiration - now
+
+        if (remainingTime > 0) {
+            redisService.setBlackList(accessToken, "logout", remainingTime)
+        }
     }
 }

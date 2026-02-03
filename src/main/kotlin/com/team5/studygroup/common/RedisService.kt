@@ -18,6 +18,11 @@ class RedisService(
         redisTemplate.opsForValue().set(key, value, expireDuration)
     }
 
+    fun setBlackList(key: String, value: String, durationMillis: Long) {
+        val expireDuration = Duration.ofMillis(durationMillis)
+        redisTemplate.opsForValue().set(key, value, expireDuration)
+    }
+
     // 데이터 조회
     fun getData(key: String): String? {
         return redisTemplate.opsForValue().get(key)
@@ -26,5 +31,9 @@ class RedisService(
     // 데이터 삭제
     fun deleteData(key: String) {
         redisTemplate.delete(key)
+    }
+
+    fun isBlacklisted(token: String): Boolean {
+        return redisTemplate.hasKey(token)
     }
 }
