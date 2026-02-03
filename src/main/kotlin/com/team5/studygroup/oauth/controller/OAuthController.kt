@@ -1,5 +1,6 @@
 package com.team5.studygroup.oauth.controller
 
+import com.team5.studygroup.common.ErrorResponse
 import com.team5.studygroup.oauth.dto.OAuthLoginResponse
 import com.team5.studygroup.oauth.dto.OAuthSignUpRequest
 import com.team5.studygroup.oauth.dto.OAuthSignUpResponse
@@ -9,10 +10,12 @@ import com.team5.studygroup.user.model.ProviderType
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -41,18 +44,29 @@ class OAuthController(
         value = [
             ApiResponse(
                 responseCode = "200",
-                description = "요청 성공 (로그인 완료 또는 회원가입 필요)",
+                description = "로그인 성공 또는 가입 절차 필요",
                 content = [Content(schema = Schema(implementation = OAuthLoginResponse::class))],
             ),
             ApiResponse(
                 responseCode = "400",
-                description = "잘못된 소셜 공급자(Provider) 타입 (예: GOOGLE, KAKAO 외 값 입력)",
-                content = [Content(schema = Schema(hidden = true))],
-            ),
-            ApiResponse(
-                responseCode = "500",
-                description = "소셜 서버 통신 에러 또는 내부 서버 에러",
-                content = [Content(schema = Schema(hidden = true))],
+                description = "잘못된 요청",
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "지원하지 않는 소셜 타입",
+                                summary = "지원하지 않는 Provider 입력 시",
+                                value = """
+                                    {"errorCode": 400,
+                                     "message": "지원하지 않는 소셜 타입입니다: NAVER", 
+                                     "timestamp": "2026-01-30T05:00:00"}
+                                     """,
+                            ),
+                        ],
+                    ),
+                ],
             ),
         ],
     )
@@ -82,26 +96,80 @@ class OAuthController(
         value = [
             ApiResponse(
                 responseCode = "200",
-                description = "회원가입 성공 및 액세스 토큰 발급",
+                description = "회원가입 성공 및 토큰 발급",
                 content = [Content(schema = Schema(implementation = OAuthSignUpResponse::class))],
             ),
             ApiResponse(
                 responseCode = "400",
-                description = """
-                    1. 잘못된 토큰 용도 (회원가입용 토큰이 아님)
-                    2. Provider 불일치 (요청한 Provider와 토큰의 Provider가 다름)
-                """,
-                content = [Content(schema = Schema(hidden = true))],
+                description = "토큰 또는 요청 정보 부적합",
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "토큰 용도 불일치",
+                                summary = "회원가입용 토큰이 아닌 경우",
+                                value = """
+                                    {"errorCode": 4002, 
+                                    "message": "회원가입 전용 토큰이 아닙니다.", 
+                                    "timestamp": "2026-01-30T05:00:00"}
+                                    """,
+                            ),
+                            ExampleObject(
+                                name = "Provider 불일치",
+                                summary = "토큰의 공급자와 요청 경로의 공급자가 다를 때",
+                                value = """
+                                    {"errorCode": 4003, 
+                                    "message": "잘못된 접근입니다. (Provider 불일치: 요청=GOOGLE, 토큰=KAKAO)", 
+                                    "timestamp": "2026-01-30T05:00:00"}
+                                    """,
+                            ),
+                        ],
+                    ),
+                ],
             ),
             ApiResponse(
                 responseCode = "401",
-                description = "유효하지 않거나 만료된 가입 토큰 (재로그인 필요)",
-                content = [Content(schema = Schema(hidden = true))],
+                description = "인증 실패",
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "가입 토큰 만료",
+                                summary = "유효하지 않거나 만료된 registerToken",
+                                value = """
+                                    {"errorCode": 4001, 
+                                    "message": "유효하지 않거나 만료된 가입 토큰입니다.", 
+                                    "timestamp": "2026-01-30T05:00:00"}
+                                    """,
+                            ),
+                        ],
+                    ),
+                ],
             ),
             ApiResponse(
                 responseCode = "403",
-                description = "가입 불가능한 이메일 도메인 (서울대 메일 아님)",
-                content = [Content(schema = Schema(hidden = true))],
+                description = "권한 없음",
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "도메인 제한",
+                                summary = "서울대 이메일이 아닌 경우",
+                                value = """
+                                    {"errorCode": 4004,
+                                     "message": "서울대 이메일(@snu.ac.kr)만 가입 가능합니다.",
+                                     "timestamp": "2026-01-30T05:00:00"}
+                                     """,
+                            ),
+                        ],
+                    ),
+                ],
             ),
         ],
     )

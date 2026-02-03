@@ -86,6 +86,7 @@ class ProfileService(
 
         // 이미지가 업로드된 시점이므로 user가 업데이트된 시점을 사용
         return UpdateProfileImageResponseDto(
+            username = user.username,
             profileImageUrl = user.profileImageUrl,
             createdAt = user.updatedAt,
         )

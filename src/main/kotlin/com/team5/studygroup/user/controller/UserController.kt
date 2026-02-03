@@ -1,5 +1,6 @@
 package com.team5.studygroup.user.controller
 
+import com.team5.studygroup.common.ErrorResponse
 import com.team5.studygroup.user.LoggedInUser
 import com.team5.studygroup.user.dto.GetProfileDto
 import com.team5.studygroup.user.dto.UpdateProfileDto
@@ -8,6 +9,7 @@ import com.team5.studygroup.user.service.ProfileService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
@@ -47,14 +49,70 @@ class UserController(
                 content = [Content(schema = Schema(implementation = GetProfileDto::class))],
             ),
             ApiResponse(
+                responseCode = "400",
+                description = "잘못된 요청 (입력값 검증 실패)",
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "검증 오류",
+                                summary = "입력값 유효성 검사 실패 예시",
+                                value = """{"errorCode": 9001, "message": "닉네임은 필수입니다.", "timestamp": "2025-05-21T10:00:00"}""",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+            ApiResponse(
+                responseCode = "401",
+                description = "인증 실패",
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "토큰 만료",
+                                value = """{"errorCode": 401, "message": "토큰이 만료되었습니다.", "timestamp": "2025-05-21T10:00:00"}""",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+            ApiResponse(
                 responseCode = "404",
                 description = "사용자를 찾을 수 없음",
-                content = [Content(schema = Schema(hidden = true))],
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "유저 없음",
+                                value = """{"errorCode": 1001, "message": "해당 유저를 찾을 수 없습니다.", "timestamp": "2025-05-21T10:00:00"}""",
+                            ),
+                        ],
+                    ),
+                ],
             ),
             ApiResponse(
                 responseCode = "409",
                 description = "이미 사용 중인 닉네임",
-                content = [Content(schema = Schema(hidden = true))],
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "닉네임 중복",
+                                summary = "이미 존재하는 닉네임 요청 시",
+                                value = """{"errorCode": 1002, "message": "이미 사용 중인 닉네임입니다.", "timestamp": "2024-05-21T10:00:00"}""",
+                            ),
+                        ],
+                    ),
+                ],
             ),
         ],
     )
@@ -76,9 +134,36 @@ class UserController(
                 content = [Content(schema = Schema(implementation = GetProfileDto::class))],
             ),
             ApiResponse(
+                responseCode = "401",
+                description = "인증 실패",
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "토큰 만료",
+                                value = """{"errorCode": 401, "message": "토큰이 만료되었습니다.", "timestamp": "2025-05-21T10:00:00"}""",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+            ApiResponse(
                 responseCode = "404",
                 description = "사용자를 찾을 수 없음",
-                content = [Content(schema = Schema(hidden = true))],
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "유저 없음",
+                                value = """{"errorCode": 1001, "message": "해당 유저를 찾을 수 없습니다.", "timestamp": "2025-05-21T10:00:00"}""",
+                            ),
+                        ],
+                    ),
+                ],
             ),
         ],
     )
@@ -99,12 +184,39 @@ class UserController(
             ApiResponse(
                 responseCode = "200",
                 description = "이미지 수정 성공",
-                content = [Content(schema = Schema(implementation = GetProfileDto::class))],
+                content = [Content(schema = Schema(implementation = UpdateProfileImageResponseDto::class))],
+            ),
+            ApiResponse(
+                responseCode = "401",
+                description = "인증 실패",
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "토큰이 유효하지 않음",
+                                value = """{"errorCode": 401, "message": "토큰이 유효하지 않습니다.", "timestamp": "2025-05-21T10:00:00"}""",
+                            ),
+                        ],
+                    ),
+                ],
             ),
             ApiResponse(
                 responseCode = "404",
                 description = "사용자를 찾을 수 없음",
-                content = [Content(schema = Schema(hidden = true))],
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "유저 없음",
+                                value = """{"errorCode": 1001, "message": "해당 유저를 찾을 수 없습니다.", "timestamp": "2025-05-21T10:00:00"}""",
+                            ),
+                        ],
+                    ),
+                ],
             ),
         ],
     )
@@ -121,18 +233,67 @@ class UserController(
         return ResponseEntity.ok(response)
     }
 
-    // 프로필 이미지 다운로드
+    @Operation(summary = "프로필 이미지 다운로드/리다이렉트")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "302",
+                description = "이미지 주소로 이동 (Found)",
+                content = [Content(schema = Schema(hidden = true))],
+            ),
+            ApiResponse(
+                responseCode = "401",
+                description = "인증 실패",
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "인증 실패",
+                                value = """{"errorCode": 401, "message": "유효하지 않은 토큰입니다.", "timestamp": "2025-05-21T10:00:00"}""",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "프로필 이미지 없음",
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "이미지 미설정",
+                                summary = "유저는 존재하나 이미지가 없는 경우",
+                                value = """{"errorCode": 404, "message": "프로필 이미지가 설정되지 않았습니다.", "timestamp": "2025-05-21T10:00:00"}""",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+        ],
+    )
     @GetMapping("/profile-image")
     fun getProfileImage(
         @Parameter(hidden = true) @LoggedInUser userId: Long,
-    ): ResponseEntity<Void> {
+    ): ResponseEntity<Any> {
         val profileImageUrl = profileService.getProfileImageUrl(userId)
         return if (profileImageUrl != null) {
             ResponseEntity.status(HttpStatus.FOUND)
                 .location(URI.create(profileImageUrl))
                 .build()
         } else {
-            ResponseEntity.notFound().build()
+            val errorBody =
+                ErrorResponse(
+                    errorCode = 404,
+                    message = "프로필 이미지가 설정되지 않았습니다.",
+                )
+            ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(errorBody)
         }
     }
 }

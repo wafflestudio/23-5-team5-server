@@ -1,5 +1,6 @@
 package com.team5.studygroup.verification.controller
 
+import com.team5.studygroup.common.ErrorResponse
 import com.team5.studygroup.oauth.dto.OAuthLoginResponse
 import com.team5.studygroup.verification.dto.EmailRequest
 import com.team5.studygroup.verification.dto.SocialVerifyRequest
@@ -12,13 +13,14 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-@Tag(name = "Verification API", description = "이메일 인증 및 소셜 추가 인증 관련 API")
+@Tag(name = "Verification API", description = "학교 이메일 인증 및 소셜 추가 인증 관련 API")
 @RestController
 @RequestMapping("/auth")
 class VerificationController(
@@ -40,13 +42,47 @@ class VerificationController(
             ),
             ApiResponse(
                 responseCode = "400",
-                description = "잘못된 이메일 도메인 (@snu.ac.kr 아님)",
-                content = [Content(schema = Schema(hidden = true))],
+                description = "도메인 오류",
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "잘못된 도메인",
+                                value = """
+                            {
+                              "errorCode": 2001,
+                              "message": "서울대학교 이메일(@snu.ac.kr)만 사용할 수 있습니다.",
+                              "timestamp": "2026-01-30T05:00:00"
+                            }
+                        """,
+                            ),
+                        ],
+                    ),
+                ],
             ),
             ApiResponse(
                 responseCode = "500",
-                description = "메일 발송 서버 오류",
-                content = [Content(schema = Schema(hidden = true))],
+                description = "메일 서버 오류",
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "발송 실패",
+                                value = """
+                            {
+                              "errorCode": 2002,
+                              "message": "메일 발송에 실패했습니다. 이메일 주소를 확인해주세요.",
+                              "timestamp": "2026-01-30T05:00:00"
+                            }
+                        """,
+                            ),
+                        ],
+                    ),
+                ],
             ),
         ],
     )
@@ -76,8 +112,35 @@ class VerificationController(
             ),
             ApiResponse(
                 responseCode = "400",
-                description = "인증 실패 (인증번호 만료, 미발송, 또는 불일치)",
-                content = [Content(schema = Schema(hidden = true))],
+                description = "검증 실패",
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "번호 만료 또는 미발급",
+                                value = """
+                            {
+                              "errorCode": 2003,
+                              "message": "인증번호가 만료되었거나 발송되지 않았습니다.",
+                              "timestamp": "2026-01-30T05:00:00"
+                            }
+                        """,
+                            ),
+                            ExampleObject(
+                                name = "번호 불일치",
+                                value = """
+                            {
+                              "errorCode": 2004,
+                              "message": "인증번호가 일치하지 않습니다.",
+                              "timestamp": "2026-01-30T05:00:00"
+                            }
+                        """,
+                            ),
+                        ],
+                    ),
+                ],
             ),
         ],
     )
@@ -95,7 +158,7 @@ class VerificationController(
     @Operation(
         summary = "소셜 로그인 회원가입 추가 인증",
         description =
-            "소셜 로그인 시도 후, 'Register Token'과 함께 이메일 인증을 수행합니다.\n\n" +
+            "소셜 로그인 시도 후, 'registerToken'과 함께 이메일 인증을 수행합니다.\n\n" +
                 "- 회원가입한 계정이 있다면 LOGIN 상태와 accessToken 반환, 메인페이지로 이동합니다.\n" +
                 "- 신규 유저라면 REGISTER 상태와 registerToken 반환\n" +
                 "- type이 REGISTER이면 닉네임, 학번, 전공을 추가로 입력받아\n" +
@@ -110,8 +173,35 @@ class VerificationController(
             ),
             ApiResponse(
                 responseCode = "400",
-                description = "인증 실패 (인증번호 만료, 불일치 등)",
-                content = [Content(schema = Schema(hidden = true))],
+                description = "검증 실패",
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "번호 만료 또는 미발급",
+                                value = """
+                            {
+                              "errorCode": 2003,
+                              "message": "인증번호가 만료되었거나 발송되지 않았습니다.",
+                              "timestamp": "2026-01-30T05:00:00"
+                            }
+                        """,
+                            ),
+                            ExampleObject(
+                                name = "번호 불일치",
+                                value = """
+                            {
+                              "errorCode": 2004,
+                              "message": "인증번호가 일치하지 않습니다.",
+                              "timestamp": "2026-01-30T05:00:00"
+                            }
+                        """,
+                            ),
+                        ],
+                    ),
+                ],
             ),
         ],
     )

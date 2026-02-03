@@ -1,15 +1,20 @@
 package com.team5.studygroup.jwt
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.team5.studygroup.common.ErrorResponse
+import com.team5.studygroup.user.UserNotFoundException
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.JwtException
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.http.MediaType
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.filter.OncePerRequestFilter
 
 class JwtAuthenticationFilter(
     private val jwtTokenProvider: JwtTokenProvider,
+    private val objectMapper: ObjectMapper,
 ) : OncePerRequestFilter() {
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -25,11 +30,14 @@ class JwtAuthenticationFilter(
                 }
             }
         } catch (e: ExpiredJwtException) {
-            setErrorResponse(response, "토큰이 만료되었습니다.", HttpServletResponse.SC_UNAUTHORIZED)
-            return // 에러 응답 후 종료
+            setErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "토큰이 만료되었습니다.")
+            return
         } catch (e: JwtException) {
-            setErrorResponse(response, "유효하지 않은 토큰입니다.", HttpServletResponse.SC_UNAUTHORIZED)
-            return // 에러 응답 후 종료
+            setErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "유효하지 않은 토큰입니다.")
+            return
+        } catch (e: UserNotFoundException) {
+            setErrorResponse(response, HttpServletResponse.SC_NOT_FOUND, "해당 유저를 찾을 수 없습니다.")
+            return
         }
 
         filterChain.doFilter(request, response)
@@ -47,11 +55,21 @@ class JwtAuthenticationFilter(
 
     private fun setErrorResponse(
         response: HttpServletResponse,
-        message: String,
         status: Int,
+        message: String,
     ) {
         response.status = status
-        response.contentType = "application/json;charset=UTF-8"
-        response.writer.write("""{"status": $status, "error": "Unauthorized", "message": "$message"}""")
+        response.contentType = MediaType.APPLICATION_JSON_VALUE // "application/json"
+        response.characterEncoding = "UTF-8"
+
+        // 정의해둔 ErrorResponse 객체 생성
+        val errorResponse =
+            ErrorResponse(
+                errorCode = status,
+                message = message,
+            )
+
+        // ObjectMapper를 사용해 객체를 JSON 문자열로 변환하여 응답에 쓰기
+        objectMapper.writeValue(response.writer, errorResponse)
     }
 }
