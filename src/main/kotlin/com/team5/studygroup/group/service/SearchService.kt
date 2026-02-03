@@ -2,13 +2,16 @@ package com.team5.studygroup.group.service
 
 import GroupResponse
 import com.team5.studygroup.group.repository.GroupRepository
+import com.team5.studygroup.usergroup.repository.UserGroupRepository
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
 class SearchService(
     private val groupRepository: GroupRepository,
+    private val userGroupRepository: UserGroupRepository,
 ) {
     // 전체 조회 + 카테고리 + 키워드 통합
     fun search(
@@ -54,6 +57,17 @@ class SearchService(
         pageable: Pageable,
     ): Page<GroupResponse> {
         val groups = groupRepository.findByLeaderId(userId, pageable)
+        return groups.map { GroupResponse.from(it) }
+    }
+
+    // 내가 참여한 스터디 그룹
+    fun searchJoinedGroup(
+        userId: Long,
+        pageable: Pageable,
+    ): Page<GroupResponse> {
+        val userGroups = userGroupRepository.findByUserId(userId)
+        val groupIds = userGroups.map { it.groupId }
+        val groups = groupRepository.findByIdIn(groupIds, pageable)
         return groups.map { GroupResponse.from(it) }
     }
 }

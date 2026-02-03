@@ -10,6 +10,8 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface GroupRepository : JpaRepository<Group, Long> {
+    fun findByIdIn(ids: List<Long>, pageable: Pageable): Page<Group>
+
     fun findByLeaderId(
         leaderId: Long,
         pageable: Pageable,
