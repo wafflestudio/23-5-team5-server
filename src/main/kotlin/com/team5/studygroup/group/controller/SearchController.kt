@@ -303,7 +303,7 @@ class SearchController(
     @GetMapping("/joined")
     fun searchJoinedGroup(
         @Parameter(hidden = true) @LoggedInUser requestingUserId: Long,
-        @RequestParam(required = false) cursorId: Long?,
+        @Parameter(description = "이전 페이지의 마지막 아이템 ID, 첫 조회 시 cursorId는 null로 입력해주세요.") @RequestParam(required = false) cursorId: Long?,
         @Parameter(description = "한 번에 가져올 개수 (1~50), 기본값은 10입니다") @RequestParam(defaultValue = "10") @Min(1) @Max(50) size: Int,
     ): ResponseEntity<CursorResponse<GroupResponse>> {
         val result = searchService.searchJoinedGroup(requestingUserId, cursorId, size)
