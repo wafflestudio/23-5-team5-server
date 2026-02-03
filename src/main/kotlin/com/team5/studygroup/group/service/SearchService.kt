@@ -4,7 +4,6 @@ import GroupResponse
 import com.team5.studygroup.group.repository.GroupRepository
 import com.team5.studygroup.usergroup.repository.UserGroupRepository
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
