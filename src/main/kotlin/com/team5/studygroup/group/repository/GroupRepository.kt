@@ -1,11 +1,14 @@
 package com.team5.studygroup.group.repository
 
 import com.team5.studygroup.group.model.Group
+import jakarta.persistence.LockModeType
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Lock
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
+import java.util.Optional
 
 @Repository
 interface GroupRepository : JpaRepository<Group, Long> {
@@ -46,4 +49,8 @@ interface GroupRepository : JpaRepository<Group, Long> {
         @Param("cursorId") cursorId: Long?,
         pageable: Pageable,
     ): List<Group>
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select g from Group g where g.id = :id")
+    fun findByIdWithLock(id: Long): Optional<Group>
 }

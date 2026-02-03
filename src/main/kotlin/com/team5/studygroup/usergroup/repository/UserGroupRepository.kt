@@ -19,4 +19,6 @@ interface UserGroupRepository : JpaRepository<UserGroup, Long> {
         groupId: Long,
         userId: Long,
     )
+
+    fun countByGroupId(groupId: Long): Int
 }
