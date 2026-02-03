@@ -92,11 +92,11 @@ class SearchController(
                       "nextCursorId": 119,
                       "hasNext": true
                     }
-                    """
-                            )
-                        ]
-                    )
-                ]
+                    """,
+                            ),
+                        ],
+                    ),
+                ],
             ),
             ApiResponse(
                 responseCode = "400",
@@ -181,11 +181,11 @@ class SearchController(
                       "nextCursorId": 142,
                       "hasNext": false
                     }
-                    """
-                            )
-                        ]
-                    )
-                ]
+                    """,
+                            ),
+                        ],
+                    ),
+                ],
             ),
             ApiResponse(
                 responseCode = "400",
@@ -276,11 +276,11 @@ class SearchController(
                       "nextCursorId": 119,
                       "hasNext": true
                     }
-                    """
-                            )
-                        ]
-                    )
-                ]
+                    """,
+                            ),
+                        ],
+                    ),
+                ],
             ),
             ApiResponse(
                 responseCode = "400",

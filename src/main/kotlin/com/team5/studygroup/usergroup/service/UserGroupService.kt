@@ -20,9 +20,13 @@ class UserGroupService(
     private val groupRepository: GroupRepository,
 ) {
     @Transactional
-    fun joinGroup(joinGroupDto: JoinGroupDto, requestingUserId: Long) {
-        val group = groupRepository.findByIdWithLock(joinGroupDto.groupId)
-            .orElseThrow { GroupNotFoundException() }
+    fun joinGroup(
+        joinGroupDto: JoinGroupDto,
+        requestingUserId: Long,
+    ) {
+        val group =
+            groupRepository.findByIdWithLock(joinGroupDto.groupId)
+                .orElseThrow { GroupNotFoundException() }
 
         if (group.status != GroupStatus.RECRUITING) {
             throw GroupNotRecruitingException()
@@ -45,17 +49,22 @@ class UserGroupService(
             UserGroup(
                 groupId = joinGroupDto.groupId,
                 userId = requestingUserId,
-            )
+            ),
         )
     }
 
     @Transactional
-    fun withdrawGroup(withdrawGroupDto: WithdrawGroupDto, requestingUserId: Long) {
-        val group = groupRepository.findById(withdrawGroupDto.groupId)
-            .orElseThrow { GroupNotFoundException() }
+    fun withdrawGroup(
+        withdrawGroupDto: WithdrawGroupDto,
+        requestingUserId: Long,
+    ) {
+        val group =
+            groupRepository.findById(withdrawGroupDto.groupId)
+                .orElseThrow { GroupNotFoundException() }
 
-        val userGroup = userGroupRepository.findByGroupIdAndUserId(withdrawGroupDto.groupId, requestingUserId)
-            ?: throw UserGroupNotFoundException()
+        val userGroup =
+            userGroupRepository.findByGroupIdAndUserId(withdrawGroupDto.groupId, requestingUserId)
+                ?: throw UserGroupNotFoundException()
 
         userGroupRepository.delete(userGroup)
     }
