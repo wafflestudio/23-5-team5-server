@@ -38,4 +38,13 @@ class SearchController(
         val result = searchService.searchMyGroup(user.id!!, pageable)
         return ResponseEntity.ok(result)
     }
+
+    @GetMapping("/joined")
+    fun searchJoinedGroup(
+        @LoggedInUser user: User,
+        @PageableDefault(size = 10, sort = ["createdAt"]) pageable: Pageable,
+    ): ResponseEntity<Page<GroupResponse>> {
+        val result = searchService.searchJoinedGroup(user.id!!, pageable)
+        return ResponseEntity.ok(result)
+    }
 }
