@@ -153,7 +153,7 @@ class AuthController(
     @Operation(
         summary = "로그아웃",
         description = "현재 사용 중인 Access Token을 블랙리스트에 등록하여 만료시킵니다.",
-        security = [SecurityRequirement(name = "Authorization")]
+        security = [SecurityRequirement(name = "Authorization")],
     )
     @ApiResponses(
         value = [
@@ -166,11 +166,11 @@ class AuthController(
                         examples = [
                             ExampleObject(
                                 name = "로그아웃 성공",
-                                value = "로그아웃 되었습니다."
-                            )
-                        ]
-                    )
-                ]
+                                value = "로그아웃 되었습니다.",
+                            ),
+                        ],
+                    ),
+                ],
             ),
             ApiResponse(
                 responseCode = "401",
@@ -185,33 +185,33 @@ class AuthController(
                                 summary = "Bearer 키워드가 없거나 형식이 잘못된 경우",
                                 value = """
                                     {
-                                        "errorCode": 2002,
+                                        "errorCode": 5002,
                                         "message": "토큰 형식이 올바르지 않습니다. (Bearer 형식을 확인해주세요)",
                                         "timestamp": "2024-05-21T10:00:00"
                                     }
-                                """
+                                """,
                             ),
                             ExampleObject(
                                 name = "이미 로그아웃된 토큰",
-                                summary = "이미 블랙리스트에 등록된 토큰으로 요청 시 (ErrorCode: 2001)",
+                                summary = "이미 블랙리스트에 등록된 토큰으로 요청 시",
                                 value = """
                                     {
-                                        "errorCode": 2001,
+                                        "errorCode": 5001,
                                         "message": "이미 로그아웃된 토큰입니다.",
                                         "timestamp": "2024-05-21T10:05:00"
                                     }
-                                """
-                            )
-                        ]
-                    )
-                ]
-            )
-        ]
+                                """,
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+        ],
     )
     @PostMapping("/logout")
     fun logout(
         @Parameter(hidden = true)
-        @RequestHeader("Authorization") authHeader: String
+        @RequestHeader("Authorization") authHeader: String,
     ): ResponseEntity<String> {
         userService.logout(authHeader)
         return ResponseEntity.ok("로그아웃 되었습니다.")

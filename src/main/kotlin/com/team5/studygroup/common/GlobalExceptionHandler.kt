@@ -1,6 +1,7 @@
 package com.team5.studygroup.common
 
 import com.team5.studygroup.DomainException
+import jakarta.validation.ConstraintViolationException
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -41,6 +42,19 @@ class GlobalExceptionHandler {
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
             .body(errorResponse)
+    }
+
+    @ExceptionHandler(ConstraintViolationException::class)
+    fun handleConstraintViolation(e: ConstraintViolationException): ResponseEntity<ErrorResponse> {
+        // e.constraintViolations에서 메시지만 추출 (첫 번째 에러 기준)
+        val message =
+            e.constraintViolations.firstOrNull()?.let {
+                it.message
+            } ?: "잘못된 요청 파라미터입니다."
+
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(ErrorResponse(errorCode = 9002, message = message))
     }
 
     @ExceptionHandler(

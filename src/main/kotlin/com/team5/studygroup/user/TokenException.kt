@@ -11,21 +11,21 @@ sealed class TokenException(
 ) : DomainException(errorCode, httpStatusCode, msg, cause)
 
 /**
- * ErrorCode: 2001
+ * ErrorCode: 5001
  * 상황: 이미 로그아웃(블랙리스트) 처리된 토큰으로 요청한 경우
  */
 class AlreadyLoggedOutException : TokenException(
-    errorCode = 2001,
+    errorCode = 5001,
     httpStatusCode = HttpStatus.UNAUTHORIZED,
     msg = "이미 로그아웃된 토큰입니다.",
 )
 
 /**
- * ErrorCode: 2002
+ * ErrorCode: 5002
  * 상황: 헤더에 Bearer가 없거나 토큰 형식이 깨진 경우
  */
 class InvalidTokenFormatException : TokenException(
-    errorCode = 2002,
+    errorCode = 5002,
     httpStatusCode = HttpStatus.UNAUTHORIZED,
     msg = "토큰 형식이 올바르지 않습니다.",
 )

@@ -18,7 +18,11 @@ class RedisService(
         redisTemplate.opsForValue().set(key, value, expireDuration)
     }
 
-    fun setBlackList(key: String, value: String, durationMillis: Long) {
+    fun setBlackList(
+        key: String,
+        value: String,
+        durationMillis: Long,
+    ) {
         val expireDuration = Duration.ofMillis(durationMillis)
         redisTemplate.opsForValue().set(key, value, expireDuration)
     }

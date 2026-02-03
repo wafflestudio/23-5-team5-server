@@ -41,7 +41,7 @@ class UserController(
                 "- **Multipart/form-data** 형식으로 요청해야 합니다.\n" +
                 "- 변경하지 않을 필드는 null로 보내면 기존 값이 유지됩니다.\n" +
                 "- 닉네임 변경 시 중복 검사가 수행됩니다.",
-        security = [SecurityRequirement(name = "Authorization")]
+        security = [SecurityRequirement(name = "Authorization")],
     )
     @ApiResponses(
         value = [
@@ -127,8 +127,11 @@ class UserController(
         return ResponseEntity.ok(response)
     }
 
-    @Operation(summary = "내 프로필 조회", description = "현재 로그인한 사용자의 프로필 정보를 조회합니다.",
-        security = [SecurityRequirement(name = "Authorization")])
+    @Operation(
+        summary = "내 프로필 조회",
+        description = "현재 로그인한 사용자의 프로필 정보를 조회합니다.",
+        security = [SecurityRequirement(name = "Authorization")],
+    )
     @ApiResponses(
         value = [
             ApiResponse(
@@ -181,7 +184,7 @@ class UserController(
     @Operation(
         summary = "프로필 이미지만 수정",
         description = "다른 정보는 유지하고 프로필 이미지만 별도로 수정합니다.",
-        security = [SecurityRequirement(name = "Authorization")]
+        security = [SecurityRequirement(name = "Authorization")],
     )
     @ApiResponses(
         value = [

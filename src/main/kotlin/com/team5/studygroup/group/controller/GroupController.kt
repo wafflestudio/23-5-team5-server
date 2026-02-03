@@ -1,10 +1,23 @@
 package com.team5.studygroup.group.controller
 
+import com.team5.studygroup.common.ErrorResponse
 import com.team5.studygroup.group.dto.CreateGroupDto
 import com.team5.studygroup.group.dto.DeleteGroupDto
 import com.team5.studygroup.group.dto.ExpireGroupDto
+import com.team5.studygroup.group.dto.GroupResponse
 import com.team5.studygroup.group.service.GroupService
 import com.team5.studygroup.user.LoggedInUser
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.ExampleObject
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -13,32 +26,128 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
+@Tag(name = "Group API", description = "스터디 그룹 관련 API")
 @RestController
 @RequestMapping("/groups")
 class GroupController(
     private val groupService: GroupService,
 ) {
+    @Operation(
+        summary = "그룹 생성",
+        description = "새로운 스터디 그룹을 생성합니다. (헤더의 토큰을 통해 그룹장을 식별합니다)",
+        security = [SecurityRequirement(name = "Authorization")],
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "201",
+                description = "생성 성공",
+                content = [Content(schema = Schema(implementation = GroupResponse::class))],
+            ),
+            ApiResponse(
+                responseCode = "400",
+                description = "잘못된 요청 (입력값 검증 실패)",
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "입력값 오류",
+                                summary = "필수 필드 누락 등",
+                                value = """{"errorCode": 9001, "message": "그룹 이름은 필수입니다.", "timestamp": "2026-02-03T10:00:00"}""",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+        ],
+    )
     @PostMapping("")
     fun createGroup(
-        @RequestBody createGroupDto: CreateGroupDto,
-        @LoggedInUser requestingUserId: Long,
-    ): ResponseEntity<Unit> {
-        return ResponseEntity.ok(groupService.createGroup(createGroupDto, requestingUserId))
+        @Valid @RequestBody createGroupDto: CreateGroupDto,
+        @Parameter(hidden = true) @LoggedInUser requestingUserId: Long,
+    ): ResponseEntity<GroupResponse> {
+        val savedGroup = groupService.createGroup(createGroupDto, requestingUserId)
+
+        return ResponseEntity
+            .status(201)
+            .body(GroupResponse.from(savedGroup))
     }
 
+    @Operation(
+        summary = "그룹 삭제",
+        description = "기존 스터디 그룹을 삭제합니다. 그룹장만 삭제 가능합니다.",
+        security = [SecurityRequirement(name = "Authorization")],
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "삭제 성공",
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        examples = [ExampleObject(value = """{"deletedId": 1}""")],
+                    ),
+                ],
+            ),
+            ApiResponse(
+                responseCode = "403",
+                description = "권한 없음",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))],
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "그룹 없음",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))],
+            ),
+        ],
+    )
     @DeleteMapping("")
     fun deleteGroup(
         @RequestBody deleteGroupDto: DeleteGroupDto,
-        @LoggedInUser requestingUserId: Long,
-    ): ResponseEntity<Unit> {
-        return ResponseEntity.ok(groupService.deleteGroup(deleteGroupDto, requestingUserId))
+        @Parameter(hidden = true) @LoggedInUser requestingUserId: Long,
+    ): ResponseEntity<Map<String, Long>> {
+        groupService.deleteGroup(deleteGroupDto, requestingUserId)
+        return ResponseEntity.ok(mapOf("deletedId" to deleteGroupDto.groupId))
     }
 
+    @Operation(
+        summary = "그룹 조기 만료/종료",
+        description = "스터디 그룹을 종료(만료)시킵니다.",
+        security = [SecurityRequirement(name = "Authorization")],
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "만료 처리 성공",
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        examples = [ExampleObject(value = """{"expiredId": 1}""")],
+                    ),
+                ],
+            ),
+            ApiResponse(
+                responseCode = "403",
+                description = "권한 없음",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))],
+            ),
+            ApiResponse(
+                responseCode = "409",
+                description = "이미 만료됨",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))],
+            ),
+        ],
+    )
     @PatchMapping("/expire")
     fun expireGroup(
         @RequestBody expireGroupDto: ExpireGroupDto,
-        @LoggedInUser requestingUserId: Long,
-    ): ResponseEntity<Unit> {
-        return ResponseEntity.ok(groupService.expireGroup(expireGroupDto, requestingUserId))
+        @Parameter(hidden = true) @LoggedInUser requestingUserId: Long,
+    ): ResponseEntity<Map<String, Long>> {
+        groupService.expireGroup(expireGroupDto, requestingUserId)
+        return ResponseEntity.ok(mapOf("expiredId" to expireGroupDto.groupId))
     }
 }

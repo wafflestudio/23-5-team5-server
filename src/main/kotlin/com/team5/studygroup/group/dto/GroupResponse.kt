@@ -1,3 +1,5 @@
+package com.team5.studygroup.group.dto
+
 import com.team5.studygroup.group.GroupStatus
 import com.team5.studygroup.group.model.Group
 import java.time.Instant

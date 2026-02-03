@@ -103,7 +103,6 @@ class UserService(
 
     @Transactional
     fun logout(authHeader: String) {
-
         // 헤더 검증: Bearer 토큰인지 확인
         if (!authHeader.startsWith("Bearer ")) {
             throw InvalidTokenFormatException()
