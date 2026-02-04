@@ -25,7 +25,7 @@ interface UserRepository : JpaRepository<User, Long> {
         WHERE u.id IN :ids 
         AND (:cursorId IS NULL OR u.id < :cursorId) 
         ORDER BY u.id DESC
-        """
+        """,
     )
     fun findByIdInAndCursor(
         @Param("ids") ids: List<Long>,
