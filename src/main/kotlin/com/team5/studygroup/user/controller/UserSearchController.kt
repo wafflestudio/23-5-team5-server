@@ -4,6 +4,7 @@ import com.team5.studygroup.common.CursorResponse
 import com.team5.studygroup.user.LoggedInUser
 import com.team5.studygroup.user.dto.UserSearchResponseDto
 import com.team5.studygroup.user.service.UserSearchService
+import io.swagger.v3.oas.annotations.Parameter
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
 import org.springframework.http.ResponseEntity
@@ -22,7 +23,7 @@ class UserSearchController(
     @GetMapping("")
     fun searchUsersInGroup(
         @RequestParam groupId: Long,
-        @LoggedInUser requestingUserId: Long,
+        @Parameter(hidden = true) @LoggedInUser requestingUserId: Long,
         @RequestParam(required = false) cursorId: Long?,
         @RequestParam(defaultValue = "10") @Min(1) @Max(50) size: Int,
     ): ResponseEntity<CursorResponse<UserSearchResponseDto>> {
