@@ -1,12 +1,13 @@
 package com.team5.studygroup.user.controller
 
+import com.team5.studygroup.common.CursorResponse
 import com.team5.studygroup.user.LoggedInUser
 import com.team5.studygroup.user.dto.UserSearchResponseDto
 import com.team5.studygroup.user.service.UserSearchService
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
-import org.springframework.data.web.PageableDefault
+import jakarta.validation.constraints.Max
+import jakarta.validation.constraints.Min
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/users/search")
+@Validated
 class UserSearchController(
     private val userSearchService: UserSearchService,
 ) {
@@ -21,9 +23,10 @@ class UserSearchController(
     fun searchUsersInGroup(
         @RequestParam groupId: Long,
         @LoggedInUser requestingUserId: Long,
-        @PageableDefault(size = 10, sort = ["createdAt"]) pageable: Pageable,
-    ): ResponseEntity<Page<UserSearchResponseDto>> {
-        val result = userSearchService.searchUsersInGroup(groupId, requestingUserId, pageable)
+        @RequestParam(required = false) cursorId: Long?,
+        @RequestParam(defaultValue = "10") @Min(1) @Max(50) size: Int,
+    ): ResponseEntity<CursorResponse<UserSearchResponseDto>> {
+        val result = userSearchService.searchUsersInGroup(groupId, requestingUserId, cursorId, size)
         return ResponseEntity.ok(result)
     }
 }
