@@ -1,7 +1,10 @@
 package com.team5.studygroup.user.repository
 
 import com.team5.studygroup.user.model.User
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -15,4 +18,18 @@ interface UserRepository : JpaRepository<User, Long> {
     // fun findUsersInGroup(groupId: Long): List<User>
 
     fun existsByStudentNumber(studentNumber: String): Boolean
+
+    @Query(
+        """
+        SELECT u FROM User u 
+        WHERE u.id IN :ids 
+        AND (:cursorId IS NULL OR u.id < :cursorId) 
+        ORDER BY u.id DESC
+        """,
+    )
+    fun findByIdInAndCursor(
+        @Param("ids") ids: List<Long>,
+        @Param("cursorId") cursorId: Long?,
+        pageable: Pageable,
+    ): List<User>
 }

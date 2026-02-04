@@ -41,3 +41,9 @@ class LoginFailedException : UserException(
     httpStatusCode = HttpStatus.UNAUTHORIZED,
     msg = "아이디 또는 비밀번호가 잘못되었습니다.",
 )
+
+class UserSearchNotAllowedException : UserException(
+    errorCode = 1006,
+    httpStatusCode = HttpStatus.FORBIDDEN,
+    msg = "그룹장만 그룹 참여 인원을 확인할 수 있습니다.",
+)
