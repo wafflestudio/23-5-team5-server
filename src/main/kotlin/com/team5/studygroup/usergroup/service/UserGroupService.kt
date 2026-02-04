@@ -1,7 +1,10 @@
 package com.team5.studygroup.usergroup.service
 
+import com.team5.studygroup.group.GroupStatus
 import com.team5.studygroup.group.repository.GroupRepository
+import com.team5.studygroup.usergroup.GroupFullException
 import com.team5.studygroup.usergroup.GroupNotFoundException
+import com.team5.studygroup.usergroup.GroupNotRecruitingException
 import com.team5.studygroup.usergroup.UserGroupDuplicateException
 import com.team5.studygroup.usergroup.UserGroupNotFoundException
 import com.team5.studygroup.usergroup.dto.JoinGroupDto
@@ -21,8 +24,21 @@ class UserGroupService(
         joinGroupDto: JoinGroupDto,
         requestingUserId: Long,
     ) {
-        if (!groupRepository.existsById(joinGroupDto.groupId)) {
-            throw GroupNotFoundException()
+        val group =
+            groupRepository.findByIdWithLock(joinGroupDto.groupId)
+                .orElseThrow { GroupNotFoundException() }
+
+        if (group.status != GroupStatus.RECRUITING) {
+            throw GroupNotRecruitingException()
+        }
+
+        val maxCapacity = group.capacity
+
+        if (maxCapacity != null) {
+            val currentMemberCount = userGroupRepository.countByGroupId(joinGroupDto.groupId)
+            if (currentMemberCount >= maxCapacity) {
+                throw GroupFullException()
+            }
         }
 
         if (userGroupRepository.findByGroupIdAndUserId(joinGroupDto.groupId, requestingUserId) != null) {
@@ -42,6 +58,10 @@ class UserGroupService(
         withdrawGroupDto: WithdrawGroupDto,
         requestingUserId: Long,
     ) {
+        val group =
+            groupRepository.findById(withdrawGroupDto.groupId)
+                .orElseThrow { GroupNotFoundException() }
+
         val userGroup =
             userGroupRepository.findByGroupIdAndUserId(withdrawGroupDto.groupId, requestingUserId)
                 ?: throw UserGroupNotFoundException()

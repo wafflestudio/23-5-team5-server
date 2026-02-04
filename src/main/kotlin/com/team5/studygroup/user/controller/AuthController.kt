@@ -7,17 +7,20 @@ import com.team5.studygroup.user.dto.SignUpDto
 import com.team5.studygroup.user.dto.SignUpResponseDto
 import com.team5.studygroup.user.service.UserService
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -145,5 +148,72 @@ class AuthController(
     ): ResponseEntity<LoginResponseDto> {
         val response = userService.login(loginDto)
         return ResponseEntity.ok(response)
+    }
+
+    @Operation(
+        summary = "로그아웃",
+        description = "현재 사용 중인 Access Token을 블랙리스트에 등록하여 만료시킵니다.",
+        security = [SecurityRequirement(name = "Authorization")],
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "로그아웃 성공",
+                content = [
+                    Content(
+                        mediaType = MediaType.TEXT_PLAIN_VALUE,
+                        examples = [
+                            ExampleObject(
+                                name = "로그아웃 성공",
+                                value = "로그아웃 되었습니다.",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+            ApiResponse(
+                responseCode = "401",
+                description = "인증 실패 (토큰 관련 오류)",
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "토큰 형식 오류",
+                                summary = "Bearer 키워드가 없거나 형식이 잘못된 경우",
+                                value = """
+                                    {
+                                        "errorCode": 5002,
+                                        "message": "토큰 형식이 올바르지 않습니다. (Bearer 형식을 확인해주세요)",
+                                        "timestamp": "2024-05-21T10:00:00"
+                                    }
+                                """,
+                            ),
+                            ExampleObject(
+                                name = "이미 로그아웃된 토큰",
+                                summary = "이미 블랙리스트에 등록된 토큰으로 요청 시",
+                                value = """
+                                    {
+                                        "errorCode": 5001,
+                                        "message": "이미 로그아웃된 토큰입니다.",
+                                        "timestamp": "2024-05-21T10:05:00"
+                                    }
+                                """,
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+        ],
+    )
+    @PostMapping("/logout")
+    fun logout(
+        @Parameter(hidden = true)
+        @RequestHeader("Authorization") authHeader: String,
+    ): ResponseEntity<String> {
+        userService.logout(authHeader)
+        return ResponseEntity.ok("로그아웃 되었습니다.")
     }
 }

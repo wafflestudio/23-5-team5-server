@@ -21,8 +21,8 @@ class GroupService(
     fun createGroup(
         createGroupDto: CreateGroupDto,
         requestingUserId: Long,
-    ) {
-        groupRepository.save(
+    ): Group {
+        return groupRepository.save(
             Group(
                 groupName = createGroupDto.groupName,
                 description = createGroupDto.description,

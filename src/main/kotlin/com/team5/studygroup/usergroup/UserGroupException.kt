@@ -33,3 +33,15 @@ class UserGroupDeleteForbiddenException : UserGroupException(
     httpStatusCode = HttpStatus.UNAUTHORIZED,
     msg = "본인이 가입한 그룹만 탈퇴할 수 있습니다.",
 )
+
+class GroupNotRecruitingException : UserGroupException(
+    errorCode = 3005,
+    httpStatusCode = HttpStatus.BAD_REQUEST,
+    msg = "현재 모집 중인 그룹이 아닙니다.",
+)
+
+class GroupFullException : UserGroupException(
+    errorCode = 3006,
+    httpStatusCode = HttpStatus.BAD_REQUEST,
+    msg = "그룹의 정원이 가득 차서 가입할 수 없습니다.",
+)
