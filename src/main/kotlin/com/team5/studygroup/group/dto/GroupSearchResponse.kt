@@ -5,7 +5,7 @@ import com.team5.studygroup.group.model.Group
 import com.team5.studygroup.user.model.User
 import java.time.Instant
 
-class GroupResponse (
+data class GroupSearchResponse(
     val id: Long,
     val groupName: String,
     val description: String,
@@ -13,6 +13,9 @@ class GroupResponse (
     val subCategoryId: Long,
     val capacity: Int?,
     val leaderId: Long?,
+    val leaderNickname: String?,
+    val leaderBio: String?,
+    val leaderUserName: String?,
     val isOnline: Boolean,
     val location: String,
     val status: GroupStatus,
@@ -21,7 +24,8 @@ class GroupResponse (
     companion object {
         fun from(
             group: Group,
-        ) = GroupResponse(
+            leader: User?,
+        ) = GroupSearchResponse(
             id = group.id!!,
             groupName = group.groupName,
             description = group.description,
@@ -29,6 +33,9 @@ class GroupResponse (
             subCategoryId = group.subCategoryId,
             capacity = group.capacity,
             leaderId = group.leaderId,
+            leaderNickname = leader?.nickname,
+            leaderBio = leader?.bio,
+            leaderUserName = leader?.username,
             isOnline = group.isOnline,
             location = group.location,
             status = group.status,
