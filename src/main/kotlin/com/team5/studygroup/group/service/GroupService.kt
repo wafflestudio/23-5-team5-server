@@ -25,23 +25,24 @@ class GroupService(
         createGroupDto: CreateGroupDto,
         requestingUserId: Long,
     ): GroupSearchResponse {
+        val leader =
+            userRepository.findByIdOrNull(requestingUserId)
+                ?: throw IllegalArgumentException("유저를 찾을 수 없습니다.")
 
-        val leader = userRepository.findByIdOrNull(requestingUserId)
-            ?: throw IllegalArgumentException("유저를 찾을 수 없습니다.")
-
-        val savedGroup = groupRepository.save(
-            Group(
-                groupName = createGroupDto.groupName,
-                description = createGroupDto.description,
-                categoryId = createGroupDto.categoryId,
-                subCategoryId = createGroupDto.subCategoryId,
-                capacity = createGroupDto.capacity,
-                leaderId = requestingUserId,
-                isOnline = createGroupDto.isOnline,
-                location = createGroupDto.location,
-                status = GroupStatus.RECRUITING,
+        val savedGroup =
+            groupRepository.save(
+                Group(
+                    groupName = createGroupDto.groupName,
+                    description = createGroupDto.description,
+                    categoryId = createGroupDto.categoryId,
+                    subCategoryId = createGroupDto.subCategoryId,
+                    capacity = createGroupDto.capacity,
+                    leaderId = requestingUserId,
+                    isOnline = createGroupDto.isOnline,
+                    location = createGroupDto.location,
+                    status = GroupStatus.RECRUITING,
+                ),
             )
-        )
         return GroupSearchResponse.from(savedGroup, leader)
     }
 
