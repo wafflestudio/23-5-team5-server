@@ -1,9 +1,10 @@
 package com.team5.studygroup.group.service
 
 import com.team5.studygroup.common.CursorResponse
-import com.team5.studygroup.group.dto.GroupResponse
+import com.team5.studygroup.group.dto.GroupSearchResponse
 import com.team5.studygroup.group.model.Group
 import com.team5.studygroup.group.repository.GroupRepository
+import com.team5.studygroup.user.repository.UserRepository
 import com.team5.studygroup.usergroup.repository.UserGroupRepository
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
@@ -12,12 +13,13 @@ import org.springframework.stereotype.Service
 class SearchService(
     private val groupRepository: GroupRepository,
     private val userGroupRepository: UserGroupRepository,
+    private val userRepository: UserRepository,
 ) {
     // 공통 로직: size + 1개 조회 후 CursorResponse로 변환 (변경 없음)
     private fun makeCursorResponse(
         groups: List<Group>,
         size: Int,
-    ): CursorResponse<GroupResponse> {
+    ): CursorResponse<GroupSearchResponse> {
         var hasNext = false
         val resultList = ArrayList(groups)
 
@@ -28,8 +30,15 @@ class SearchService(
 
         val nextCursorId = resultList.lastOrNull()?.id
 
+        val leaderIds = resultList.mapNotNull { it.leaderId }
+        val leaders = userRepository.findAllById(leaderIds).associateBy { it.id }
+
         return CursorResponse(
-            content = resultList.map { GroupResponse.from(it) },
+            content =
+                resultList.map { group ->
+                    val leader = group.leaderId?.let { leaders[it] }
+                    GroupSearchResponse.from(group, leader)
+                },
             nextCursorId = nextCursorId,
             hasNext = hasNext,
         )
@@ -42,7 +51,7 @@ class SearchService(
         keyword: String?,
         cursorId: Long?,
         size: Int,
-    ): CursorResponse<GroupResponse> {
+    ): CursorResponse<GroupSearchResponse> {
         // 커서 기반 페이징을 위한 size + 1 설정
         val pageable = PageRequest.of(0, size + 1)
 
@@ -67,7 +76,7 @@ class SearchService(
         userId: Long,
         cursorId: Long?,
         size: Int,
-    ): CursorResponse<GroupResponse> {
+    ): CursorResponse<GroupSearchResponse> {
         val pageable = PageRequest.of(0, size + 1)
         val groups = groupRepository.findByLeaderIdAndCursor(userId, cursorId, pageable)
 
@@ -79,7 +88,7 @@ class SearchService(
         userId: Long,
         cursorId: Long?,
         size: Int,
-    ): CursorResponse<GroupResponse> {
+    ): CursorResponse<GroupSearchResponse> {
         val pageable = PageRequest.of(0, size + 1)
 
         val userGroups = userGroupRepository.findByUserId(userId)
