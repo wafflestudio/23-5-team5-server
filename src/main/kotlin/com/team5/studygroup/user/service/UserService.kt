@@ -37,7 +37,9 @@ class UserService(
                     if (existingUser.nickname != signUpDto.nickname && userRepository.existsByNickname(signUpDto.nickname)) {
                         throw NicknameDuplicateException()
                     }
-                    if (existingUser.studentNumber != signUpDto.studentNumber && userRepository.existsByStudentNumber(signUpDto.studentNumber)) {
+                    if (existingUser.studentNumber != signUpDto.studentNumber &&
+                        userRepository.existsByStudentNumber(signUpDto.studentNumber)
+                    ) {
                         throw StudentNumberDuplicateException()
                     }
 
