@@ -2,7 +2,7 @@ package com.team5.studygroup.group.controller
 
 import com.team5.studygroup.common.CursorResponse
 import com.team5.studygroup.common.ErrorResponse
-import com.team5.studygroup.group.dto.GroupResponse
+import com.team5.studygroup.group.dto.GroupSearchResponse
 import com.team5.studygroup.group.service.SearchService
 import com.team5.studygroup.user.LoggedInUser
 import io.swagger.v3.oas.annotations.Operation
@@ -129,7 +129,7 @@ class SearchController(
         @RequestParam(required = false) keyword: String?,
         @Parameter(description = "이전 페이지의 마지막 아이템 ID, 첫 조회 시 cursorId는 null로 입력해주세요.") @RequestParam(required = false) cursorId: Long?,
         @Parameter(description = "한 번에 가져올 개수 (1~50), 기본값은 10입니다") @RequestParam(defaultValue = "10") @Min(1) @Max(50) size: Int,
-    ): ResponseEntity<CursorResponse<GroupResponse>> {
+    ): ResponseEntity<CursorResponse<GroupSearchResponse>> {
         val result = searchService.search(categoryId, subCategoryId, keyword, cursorId, size)
         return ResponseEntity.ok(result)
     }
@@ -210,7 +210,7 @@ class SearchController(
         @Parameter(hidden = true) @LoggedInUser requestingUserId: Long,
         @Parameter(description = "이전 페이지의 마지막 아이템 ID, 첫 조회 시 cursorId는 null로 입력해주세요.") @RequestParam(required = false) cursorId: Long?,
         @Parameter(description = "한 번에 가져올 개수 (1~50), 기본값은 10입니다") @RequestParam(defaultValue = "10") @Min(1) @Max(50) size: Int,
-    ): ResponseEntity<CursorResponse<GroupResponse>> {
+    ): ResponseEntity<CursorResponse<GroupSearchResponse>> {
         val result = searchService.searchMyGroup(requestingUserId, cursorId, size)
         return ResponseEntity.ok(result)
     }
@@ -305,7 +305,7 @@ class SearchController(
         @Parameter(hidden = true) @LoggedInUser requestingUserId: Long,
         @Parameter(description = "이전 페이지의 마지막 아이템 ID, 첫 조회 시 cursorId는 null로 입력해주세요.") @RequestParam(required = false) cursorId: Long?,
         @Parameter(description = "한 번에 가져올 개수 (1~50), 기본값은 10입니다") @RequestParam(defaultValue = "10") @Min(1) @Max(50) size: Int,
-    ): ResponseEntity<CursorResponse<GroupResponse>> {
+    ): ResponseEntity<CursorResponse<GroupSearchResponse>> {
         val result = searchService.searchJoinedGroup(requestingUserId, cursorId, size)
         return ResponseEntity.ok(result)
     }

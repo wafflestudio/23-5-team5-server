@@ -5,6 +5,7 @@ import com.team5.studygroup.group.dto.CreateGroupDto
 import com.team5.studygroup.group.dto.DeleteGroupDto
 import com.team5.studygroup.group.dto.ExpireGroupDto
 import com.team5.studygroup.group.dto.GroupResponse
+import com.team5.studygroup.group.dto.GroupSearchResponse
 import com.team5.studygroup.group.service.GroupService
 import com.team5.studygroup.user.LoggedInUser
 import io.swagger.v3.oas.annotations.Operation
@@ -42,7 +43,7 @@ class GroupController(
             ApiResponse(
                 responseCode = "201",
                 description = "생성 성공",
-                content = [Content(schema = Schema(implementation = GroupResponse::class))],
+                content = [Content(schema = Schema(implementation = GroupSearchResponse::class))],
             ),
             ApiResponse(
                 responseCode = "400",
