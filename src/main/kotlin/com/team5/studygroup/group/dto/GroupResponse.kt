@@ -4,7 +4,7 @@ import com.team5.studygroup.group.GroupStatus
 import com.team5.studygroup.group.model.Group
 import java.time.Instant
 
-class GroupResponse(
+data class GroupResponse(
     val id: Long,
     val groupName: String,
     val description: String,

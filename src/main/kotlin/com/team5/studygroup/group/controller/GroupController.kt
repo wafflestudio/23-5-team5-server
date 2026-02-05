@@ -68,12 +68,12 @@ class GroupController(
     fun createGroup(
         @Valid @RequestBody createGroupDto: CreateGroupDto,
         @Parameter(hidden = true) @LoggedInUser requestingUserId: Long,
-    ): ResponseEntity<GroupResponse> {
-        val savedGroup = groupService.createGroup(createGroupDto, requestingUserId)
+    ): ResponseEntity<GroupSearchResponse> {
+        val response = groupService.createGroup(createGroupDto, requestingUserId)
 
         return ResponseEntity
             .status(201)
-            .body(GroupResponse.from(savedGroup))
+            .body(response)
     }
 
     @Operation(

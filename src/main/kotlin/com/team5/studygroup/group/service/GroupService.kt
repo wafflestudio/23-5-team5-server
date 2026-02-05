@@ -4,11 +4,13 @@ import com.team5.studygroup.group.GroupStatus
 import com.team5.studygroup.group.dto.CreateGroupDto
 import com.team5.studygroup.group.dto.DeleteGroupDto
 import com.team5.studygroup.group.dto.ExpireGroupDto
+import com.team5.studygroup.group.dto.GroupSearchResponse
 import com.team5.studygroup.group.exception.GroupAlreadyExpiredException
 import com.team5.studygroup.group.exception.GroupNotFoundException
 import com.team5.studygroup.group.exception.NotGroupLeaderException
 import com.team5.studygroup.group.model.Group
 import com.team5.studygroup.group.repository.GroupRepository
+import com.team5.studygroup.user.repository.UserRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -16,13 +18,18 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class GroupService(
     private val groupRepository: GroupRepository,
+    private val userRepository: UserRepository,
 ) {
     @Transactional
     fun createGroup(
         createGroupDto: CreateGroupDto,
         requestingUserId: Long,
-    ): Group {
-        return groupRepository.save(
+    ): GroupSearchResponse {
+
+        val leader = userRepository.findByIdOrNull(requestingUserId)
+            ?: throw IllegalArgumentException("유저를 찾을 수 없습니다.")
+
+        val savedGroup = groupRepository.save(
             Group(
                 groupName = createGroupDto.groupName,
                 description = createGroupDto.description,
@@ -33,8 +40,9 @@ class GroupService(
                 isOnline = createGroupDto.isOnline,
                 location = createGroupDto.location,
                 status = GroupStatus.RECRUITING,
-            ),
+            )
         )
+        return GroupSearchResponse.from(savedGroup, leader)
     }
 
     @Transactional
