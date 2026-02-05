@@ -3,6 +3,7 @@ package com.team5.studygroup.usergroup.service
 import com.team5.studygroup.group.GroupStatus
 import com.team5.studygroup.group.repository.GroupRepository
 import com.team5.studygroup.usergroup.GroupFullException
+import com.team5.studygroup.usergroup.GroupLeaderCannotJoinException
 import com.team5.studygroup.usergroup.GroupNotFoundException
 import com.team5.studygroup.usergroup.GroupNotRecruitingException
 import com.team5.studygroup.usergroup.UserGroupDuplicateException
@@ -30,6 +31,10 @@ class UserGroupService(
 
         if (group.status != GroupStatus.RECRUITING) {
             throw GroupNotRecruitingException()
+        }
+
+        if (group.leaderId != null && group.leaderId == requestingUserId) {
+            throw GroupLeaderCannotJoinException()
         }
 
         val maxCapacity = group.capacity

@@ -38,19 +38,27 @@ class ProfileService(
                 }
             }
         }
-        val newProfileImageUrl =
-            dto.profile_image?.let { file ->
-                if (!file.isEmpty) s3Service.upload(file, "profile") else null
+
+        val oldProfileImageUrl = user.profileImageUrl
+        var newProfileImageUrl: String? = null
+
+        dto.profile_image?.let { file ->
+            if (!file.isEmpty) {
+                newProfileImageUrl = s3Service.upload(file, "profile")
             }
-        // 2. 엔티티 내부 메서드 호출 (Dirty Checking에 의해 자동 저장됨)
+        }
+
         user.updateProfile(
             major = dto.major,
             nickname = dto.nickname,
-            profileImageUrl = newProfileImageUrl,
+            profileImageUrl = newProfileImageUrl ?: user.profileImageUrl,
             bio = dto.bio,
         )
 
-        // 3. 수정된 유저 정보를 DTO로 변환하여 반환
+        if (newProfileImageUrl != null && oldProfileImageUrl != null) {
+            s3Service.delete(oldProfileImageUrl)
+        }
+
         return GetProfileDto.fromEntity(user)
     }
 
@@ -75,6 +83,8 @@ class ProfileService(
             userRepository.findById(userId)
                 .orElseThrow { UserNotFoundException() }
 
+        val oldProfileImageUrl = user.profileImageUrl
+
         val newProfileImageUrl =
             if (!profileImage.isEmpty) {
                 s3Service.upload(profileImage, "profile")
@@ -82,9 +92,14 @@ class ProfileService(
                 null
             }
 
-        user.updateProfile(profileImageUrl = newProfileImageUrl)
+        if (newProfileImageUrl != null) {
+            user.updateProfile(profileImageUrl = newProfileImageUrl)
 
-        // 이미지가 업로드된 시점이므로 user가 업데이트된 시점을 사용
+            if (oldProfileImageUrl != null) {
+                s3Service.delete(oldProfileImageUrl)
+            }
+        }
+
         return UpdateProfileImageResponseDto(
             username = user.username,
             profileImageUrl = user.profileImageUrl,

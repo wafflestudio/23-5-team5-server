@@ -34,10 +34,12 @@ class UserService(
         val userToSave =
             if (existingUser != null) {
                 if (existingUser.password == null) {
-                    if (userRepository.existsByNickname(signUpDto.nickname)) {
+                    if (existingUser.nickname != signUpDto.nickname && userRepository.existsByNickname(signUpDto.nickname)) {
                         throw NicknameDuplicateException()
                     }
-                    if (userRepository.existsByStudentNumber(signUpDto.studentNumber)) {
+                    if (existingUser.studentNumber != signUpDto.studentNumber &&
+                        userRepository.existsByStudentNumber(signUpDto.studentNumber)
+                    ) {
                         throw StudentNumberDuplicateException()
                     }
 

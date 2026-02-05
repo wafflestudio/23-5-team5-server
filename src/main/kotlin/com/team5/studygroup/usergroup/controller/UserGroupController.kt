@@ -60,6 +60,14 @@ class UserGroupController(
                                     "message": "그룹의 정원이 가득 차서 가입할 수 없습니다.", 
                                     "timestamp": "2026-02-03T22:00:00"}""",
                             ),
+                            ExampleObject(
+                                name = "방장 가입 불가 (3007)",
+                                summary = "방장이 본인 그룹에 가입하려는 경우",
+                                value = """
+                                    {"errorCode": 3007, 
+                                    "message": "방장은 본인 그룹에 참여 신청을 할 수 없습니다.", 
+                                    "timestamp": "2026-02-03T22:00:00"}""",
+                            ),
                         ],
                     ),
                 ],

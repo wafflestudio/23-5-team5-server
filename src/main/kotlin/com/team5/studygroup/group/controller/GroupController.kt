@@ -4,7 +4,6 @@ import com.team5.studygroup.common.ErrorResponse
 import com.team5.studygroup.group.dto.CreateGroupDto
 import com.team5.studygroup.group.dto.DeleteGroupDto
 import com.team5.studygroup.group.dto.ExpireGroupDto
-import com.team5.studygroup.group.dto.GroupResponse
 import com.team5.studygroup.group.dto.GroupSearchResponse
 import com.team5.studygroup.group.service.GroupService
 import com.team5.studygroup.user.LoggedInUser
@@ -43,7 +42,36 @@ class GroupController(
             ApiResponse(
                 responseCode = "201",
                 description = "생성 성공",
-                content = [Content(schema = Schema(implementation = GroupSearchResponse::class))],
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = GroupSearchResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "그룹 생성 성공 예시",
+                                summary = "새로 생성된 그룹 정보 반환 (리더 정보 포함)",
+                                value = """
+                                    {
+                                      "id": 155,
+                                      "groupName": "스프링 부트 입문 스터디",
+                                      "description": "스프링 부트 3.x 버전을 처음부터 차근차근 배웁니다.",
+                                      "categoryId": 1,
+                                      "subCategoryId": 12,
+                                      "capacity": 4,
+                                      "leaderId": 501,
+                                      "leaderNickname": "개발왕",
+                                      "leaderBio": "서버 개발자를 꿈꾸는 취준생입니다.",
+                                      "leaderUserName": "waffle@snu.ac.kr",
+                                      "isOnline": true,
+                                      "location": "온라인 (Zoom)",
+                                      "status": "RECRUITING",
+                                      "createdAt": "2026-02-05T09:30:00Z"
+                                    }
+                                """,
+                            ),
+                        ],
+                    ),
+                ],
             ),
             ApiResponse(
                 responseCode = "400",
@@ -68,12 +96,12 @@ class GroupController(
     fun createGroup(
         @Valid @RequestBody createGroupDto: CreateGroupDto,
         @Parameter(hidden = true) @LoggedInUser requestingUserId: Long,
-    ): ResponseEntity<GroupResponse> {
-        val savedGroup = groupService.createGroup(createGroupDto, requestingUserId)
+    ): ResponseEntity<GroupSearchResponse> {
+        val response = groupService.createGroup(createGroupDto, requestingUserId)
 
         return ResponseEntity
             .status(201)
-            .body(GroupResponse.from(savedGroup))
+            .body(response)
     }
 
     @Operation(

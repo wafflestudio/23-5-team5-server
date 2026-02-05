@@ -45,3 +45,9 @@ class GroupFullException : UserGroupException(
     httpStatusCode = HttpStatus.BAD_REQUEST,
     msg = "그룹의 정원이 가득 차서 가입할 수 없습니다.",
 )
+
+class GroupLeaderCannotJoinException : UserGroupException(
+    errorCode = 3007,
+    httpStatusCode = HttpStatus.BAD_REQUEST,
+    msg = "방장은 본인 그룹에 참여 신청을 할 수 없습니다.",
+)
