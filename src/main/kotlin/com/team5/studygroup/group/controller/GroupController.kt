@@ -62,6 +62,7 @@ class GroupController(
                                       "leaderNickname": "개발왕",
                                       "leaderBio": "서버 개발자를 꿈꾸는 취준생입니다.",
                                       "leaderUserName": "waffle@snu.ac.kr",
+                                      "leaderProfileImageUrl": "https://s3.ap-northeast-2.amazonaws.com/team5-bucket/profiles/default_user.jpg",
                                       "isOnline": true,
                                       "location": "온라인 (Zoom)",
                                       "status": "RECRUITING",
