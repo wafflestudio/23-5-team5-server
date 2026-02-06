@@ -2,7 +2,9 @@ package com.team5.studygroup.user.service
 
 import com.team5.studygroup.common.CursorResponse
 import com.team5.studygroup.group.repository.GroupRepository
+import com.team5.studygroup.user.UserNotFoundException
 import com.team5.studygroup.user.UserSearchNotAllowedException
+import com.team5.studygroup.user.dto.GetProfileDto
 import com.team5.studygroup.user.dto.UserSearchResponseDto
 import com.team5.studygroup.user.model.User
 import com.team5.studygroup.user.repository.UserRepository
@@ -60,5 +62,12 @@ class UserSearchService(
             nextCursorId = nextCursorId,
             hasNext = hasNext,
         )
+    }
+
+    fun getOtherProfile(targetUserId: Long): GetProfileDto {
+        val user = userRepository.findById(targetUserId)
+            .orElseThrow { UserNotFoundException() }
+
+        return GetProfileDto.fromEntity(user)
     }
 }

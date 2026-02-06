@@ -3,7 +3,9 @@ package com.team5.studygroup.user.controller
 import com.team5.studygroup.common.CursorResponse
 import com.team5.studygroup.common.ErrorResponse
 import com.team5.studygroup.user.LoggedInUser
+import com.team5.studygroup.user.dto.GetProfileDto
 import com.team5.studygroup.user.dto.UserSearchResponseDto
+import com.team5.studygroup.user.dto.UserTargetDto
 import com.team5.studygroup.user.service.UserSearchService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -20,6 +22,8 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -133,5 +137,44 @@ class UserSearchController(
     ): ResponseEntity<CursorResponse<UserSearchResponseDto>> {
         val result = userSearchService.searchUsersInGroup(groupId, requestingUserId, cursorId, size)
         return ResponseEntity.ok(result)
+    }
+
+    @Operation(
+        summary = "다른 사람 프로필 상세 조회",
+        description = "특정 유저의 ID를 Body로 받아 상세 프로필을 조회합니다.",
+        security = [SecurityRequirement(name = "Authorization")]
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "조회 성공",
+                content = [Content(schema = Schema(implementation = GetProfileDto::class))]
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "대상 없음",
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = ErrorResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "유저 없음",
+                                value = """{"errorCode": 1001, "message": "해당 유저를 찾을 수 없습니다.", "timestamp": "2026-02-03T22:00:00"}"""
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
+    @PostMapping("/profile")
+    fun getOtherUserProfile(
+        @Parameter(hidden = true) @LoggedInUser requestingUserId: Long,
+        @RequestBody request: UserTargetDto
+    ): ResponseEntity<GetProfileDto> {
+        val response = userSearchService.getOtherProfile(request.userId)
+        return ResponseEntity.ok(response)
     }
 }
