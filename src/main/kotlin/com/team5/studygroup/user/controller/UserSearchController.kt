@@ -142,14 +142,14 @@ class UserSearchController(
     @Operation(
         summary = "다른 사람 프로필 상세 조회",
         description = "특정 유저의 ID를 Body로 받아 상세 프로필을 조회합니다.",
-        security = [SecurityRequirement(name = "Authorization")]
+        security = [SecurityRequirement(name = "Authorization")],
     )
     @ApiResponses(
         value = [
             ApiResponse(
                 responseCode = "200",
                 description = "조회 성공",
-                content = [Content(schema = Schema(implementation = GetProfileDto::class))]
+                content = [Content(schema = Schema(implementation = GetProfileDto::class))],
             ),
             ApiResponse(
                 responseCode = "404",
@@ -161,18 +161,18 @@ class UserSearchController(
                         examples = [
                             ExampleObject(
                                 name = "유저 없음",
-                                value = """{"errorCode": 1001, "message": "해당 유저를 찾을 수 없습니다.", "timestamp": "2026-02-03T22:00:00"}"""
-                            )
-                        ]
-                    )
-                ]
-            )
-        ]
+                                value = """{"errorCode": 1001, "message": "해당 유저를 찾을 수 없습니다.", "timestamp": "2026-02-03T22:00:00"}""",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+        ],
     )
     @PostMapping("/profile")
     fun getOtherUserProfile(
         @Parameter(hidden = true) @LoggedInUser requestingUserId: Long,
-        @RequestBody request: UserTargetDto
+        @RequestBody request: UserTargetDto,
     ): ResponseEntity<GetProfileDto> {
         val response = userSearchService.getOtherProfile(request.userId)
         return ResponseEntity.ok(response)

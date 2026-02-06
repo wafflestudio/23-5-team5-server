@@ -65,8 +65,9 @@ class UserSearchService(
     }
 
     fun getOtherProfile(targetUserId: Long): GetProfileDto {
-        val user = userRepository.findById(targetUserId)
-            .orElseThrow { UserNotFoundException() }
+        val user =
+            userRepository.findById(targetUserId)
+                .orElseThrow { UserNotFoundException() }
 
         return GetProfileDto.fromEntity(user)
     }
