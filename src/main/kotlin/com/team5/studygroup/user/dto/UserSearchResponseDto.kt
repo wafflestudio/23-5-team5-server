@@ -7,6 +7,7 @@ data class UserSearchResponseDto(
     val username: String,
     val major: String,
     val nickname: String,
+    val profileImageUrl: String?
 ) {
     companion object {
         fun from(user: User): UserSearchResponseDto {
@@ -15,6 +16,7 @@ data class UserSearchResponseDto(
                 username = user.username,
                 major = user.major,
                 nickname = user.nickname,
+                profileImageUrl = user.profileImageUrl,
             )
         }
     }

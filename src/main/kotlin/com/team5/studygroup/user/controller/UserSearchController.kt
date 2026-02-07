@@ -59,13 +59,15 @@ class UserSearchController(
                                           "id": 15,
                                           "username": "user_kim",
                                           "major": "컴퓨터공학과",
-                                          "nickname": "코딩하는_김철수"
+                                          "nickname": "코딩하는_김철수",
+                                          "profileImageUrl": "https://s3.ap-northeast-2.amazonaws.com/team5-bucket/profiles/default_user.jpg"
                                         },
                                         {
                                           "id": 12,
                                           "username": "user_lee",
                                           "major": "시각디자인학과",
-                                          "nickname": "디자인_이영희"
+                                          "nickname": "디자인_이영희",
+                                          "profileImageUrl": "https://s3.ap-northeast-2.amazonaws.com/team5-bucket/profiles/default_user.jpg"
                                         }
                                       ],
                                       "nextCursorId": 12,
