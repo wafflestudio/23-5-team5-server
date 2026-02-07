@@ -8,13 +8,9 @@ import com.team5.studygroup.review.dto.UpdateReviewDto
 import com.team5.studygroup.review.model.Review
 import com.team5.studygroup.review.service.ReviewService
 import com.team5.studygroup.user.LoggedInUser
-import com.team5.studygroup.user.dto.UserSearchResponseDto
 import io.swagger.v3.oas.annotations.Parameter
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
-import org.springframework.data.web.PageableDefault
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -33,7 +29,7 @@ class ReviewController(
     @PostMapping("")
     fun createReview(
         @RequestBody createReviewDto: CreateReviewDto,
-        @Parameter(hidden=true) @LoggedInUser userId: Long,
+        @Parameter(hidden = true) @LoggedInUser userId: Long,
     ): ResponseEntity<Review> {
         return ResponseEntity.ok(reviewService.createReview(createReviewDto, userId))
     }
@@ -41,7 +37,7 @@ class ReviewController(
     @DeleteMapping("")
     fun deleteReview(
         @RequestBody deleteReviewDto: DeleteReviewDto,
-        @Parameter(hidden=true) @LoggedInUser userId: Long,
+        @Parameter(hidden = true) @LoggedInUser userId: Long,
     ): ResponseEntity<Unit> {
         return ResponseEntity.ok(reviewService.deleteReview(deleteReviewDto, userId))
     }
@@ -49,7 +45,7 @@ class ReviewController(
     @PatchMapping("")
     fun updateReview(
         @RequestBody updateReviewDto: UpdateReviewDto,
-        @Parameter(hidden=true) @LoggedInUser userId: Long,
+        @Parameter(hidden = true) @LoggedInUser userId: Long,
     ): ResponseEntity<Review> {
         return ResponseEntity.ok(reviewService.updateReview(updateReviewDto, userId))
     }

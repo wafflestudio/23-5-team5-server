@@ -11,14 +11,8 @@ import com.team5.studygroup.review.exception.ReviewUpdateForbiddenException
 import com.team5.studygroup.review.model.Review
 import com.team5.studygroup.review.repository.ReviewRepository
 import com.team5.studygroup.user.UserNotFoundException
-import com.team5.studygroup.user.UserSearchNotAllowedException
-import com.team5.studygroup.user.dto.UserSearchResponseDto
-import com.team5.studygroup.user.model.User
 import com.team5.studygroup.user.repository.UserRepository
-import com.team5.studygroup.usergroup.GroupNotFoundException
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -77,9 +71,10 @@ class ReviewService(
         cursorId: Long?,
         size: Int,
     ): CursorResponse<ReviewResponse> {
-        val reviewee = userRepository.findById(revieweeId).orElseThrow {
-            UserNotFoundException()
-        }
+        val reviewee =
+            userRepository.findById(revieweeId).orElseThrow {
+                UserNotFoundException()
+            }
 
         val pageable = PageRequest.of(0, size + 1)
 
