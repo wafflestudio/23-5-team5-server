@@ -1,5 +1,6 @@
 package com.team5.studygroup.review.controller
 
+import com.team5.studygroup.common.CursorResponse
 import com.team5.studygroup.review.dto.CreateReviewDto
 import com.team5.studygroup.review.dto.DeleteReviewDto
 import com.team5.studygroup.review.dto.ReviewResponse
@@ -7,6 +8,10 @@ import com.team5.studygroup.review.dto.UpdateReviewDto
 import com.team5.studygroup.review.model.Review
 import com.team5.studygroup.review.service.ReviewService
 import com.team5.studygroup.user.LoggedInUser
+import com.team5.studygroup.user.dto.UserSearchResponseDto
+import io.swagger.v3.oas.annotations.Parameter
+import jakarta.validation.constraints.Max
+import jakarta.validation.constraints.Min
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
@@ -28,35 +33,35 @@ class ReviewController(
     @PostMapping("")
     fun createReview(
         @RequestBody createReviewDto: CreateReviewDto,
-        @LoggedInUser userId: Long,
+        @Parameter(hidden=true) @LoggedInUser userId: Long,
     ): ResponseEntity<Review> {
         return ResponseEntity.ok(reviewService.createReview(createReviewDto, userId))
     }
 
     @DeleteMapping("")
     fun deleteReview(
-        @RequestBody DeleteReviewDto: DeleteReviewDto,
-        @LoggedInUser userId: Long,
+        @RequestBody deleteReviewDto: DeleteReviewDto,
+        @Parameter(hidden=true) @LoggedInUser userId: Long,
     ): ResponseEntity<Unit> {
-        return ResponseEntity.ok(reviewService.deleteReview(DeleteReviewDto, userId))
+        return ResponseEntity.ok(reviewService.deleteReview(deleteReviewDto, userId))
     }
 
     @PatchMapping("")
     fun updateReview(
-        @RequestBody UpdateReviewDto: UpdateReviewDto,
-        @LoggedInUser userId: Long,
+        @RequestBody updateReviewDto: UpdateReviewDto,
+        @Parameter(hidden=true) @LoggedInUser userId: Long,
     ): ResponseEntity<Review> {
-        return ResponseEntity.ok(reviewService.updateReview(UpdateReviewDto, userId))
+        return ResponseEntity.ok(reviewService.updateReview(updateReviewDto, userId))
     }
 
     @GetMapping("/search")
     fun search(
-        @RequestParam("groupId", required = false) groupId: Long?,
-        @RequestParam("reviewerId", required = false) reviewerId: Long?,
-        @RequestParam("revieweeId", required = false) revieweeId: Long?,
-        @PageableDefault(size = 10, sort = ["createdAt"]) pageable: Pageable,
-    ): ResponseEntity<Page<ReviewResponse>> {
-        val result = reviewService.search(groupId, reviewerId, revieweeId, pageable)
+        @Parameter(hidden = true) @LoggedInUser requestingUserId: Long,
+        @RequestParam("revieweeId", required = true) revieweeId: Long,
+        @Parameter(description = "커서 ID (이전 페이지의 마지막 리뷰 ID)") @RequestParam(required = false) cursorId: Long?,
+        @Parameter(description = "페이지 사이즈 (1~50), 기본값은 10입니다.") @RequestParam(defaultValue = "10") @Min(1) @Max(50) size: Int,
+    ): ResponseEntity<CursorResponse<ReviewResponse>> {
+        val result = reviewService.searchReviews(revieweeId, cursorId, size)
         return ResponseEntity.ok(result)
     }
 }
