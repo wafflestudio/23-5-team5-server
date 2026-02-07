@@ -33,4 +33,10 @@ interface ReviewRepository : JpaRepository<Review, Long> {
         @Param("cursorId") cursorId: Long?,
         pageable: Pageable,
     ): List<Review>
+
+    fun findByGroupIdAndReviewerIdAndRevieweeId(
+        groupId: Long,
+        reviewerId: Long,
+        revieweeId: Long,
+    ): Review?
 }

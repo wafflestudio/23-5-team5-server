@@ -60,4 +60,15 @@ class ReviewController(
         val result = reviewService.searchReviews(revieweeId, cursorId, size)
         return ResponseEntity.ok(result)
     }
+
+    @GetMapping("/search/unique")
+    fun searchReviewer(
+        @Parameter(hidden = true) @LoggedInUser requestingUserId: Long,
+        @RequestParam("groupId", required = true) groupId: Long,
+        @RequestParam("reviewerId", required = true) reviewerId: Long,
+        @RequestParam("revieweeId", required = true) revieweeId: Long,
+    ): ResponseEntity<ReviewResponse> {
+        val result = reviewService.searchReviewUnique(groupId, reviewerId, revieweeId)
+        return ResponseEntity.ok(result)
+    }
 }

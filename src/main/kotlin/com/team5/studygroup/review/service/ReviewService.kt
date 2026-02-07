@@ -105,4 +105,20 @@ class ReviewService(
             hasNext = hasNext,
         )
     }
+
+    @Transactional(readOnly = true)
+    fun searchReviewUnique(
+        groupId: Long,
+        reviewerId: Long,
+        revieweeId: Long,
+    ): ReviewResponse {
+        val review =
+            reviewRepository.findByGroupIdAndReviewerIdAndRevieweeId(
+                groupId = groupId,
+                reviewerId = reviewerId,
+                revieweeId = revieweeId,
+            ) ?: throw NoSuchElementException("해당 조건(Group: $groupId, Reviewer: $reviewerId, Reviewee: $revieweeId)에 맞는 리뷰를 찾을 수 없습니다.")
+
+        return ReviewResponse.from(review)
+    }
 }

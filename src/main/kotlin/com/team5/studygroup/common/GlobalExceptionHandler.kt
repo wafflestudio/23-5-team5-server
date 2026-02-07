@@ -28,6 +28,12 @@ class GlobalExceptionHandler {
             .body(errorResponse)
     }
 
+    @ExceptionHandler(NoSuchElementException::class)
+    fun handleNotFound(e: NoSuchElementException): ResponseEntity<String> {
+        // 데이터가 없을 때 404 상태 코드와 에러 메시지 반환
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.message)
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleValidationException(e: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {
         val message =
